@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>文件管理</title>
+</head>
+<body>
+    <div>
+        <div>
+            <h2>文件管理</h2>
+            <h2>共享文件/</h2>
+        </div>
+        <hr>
+        <div>
+            <button onclick="last()">上一步</button>
+            <button>上传</button>
+        </div>
+        <hr>
+        <div>
+            <div>
+                <a>1.</a>
+                <a href="./新建文件夹/">新建文件夹</a>
+                <a>文件夹</a>
+            </div>
+            <div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var ok
+        yz()
+
+        function yz() {
+            localStorage.getItem('ok',ok)
+            if(ok==0)
+            {
+                history.go(-1)
+            }
+            else
+            {
+                localStorage.setItem('ok',"0")
+            }
+        }
+        function last(){
+            location.href="/"
+        }
+        function f(name){
+            location.href('name')
+        }
+    </script>
+</body>
+</html>
