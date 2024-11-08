@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>dn</title>
+    <style>
+        body{
+            background-color: gray;
+            text-align: center;
+        }
+        .div{
+		    padding:8px;border:2px solid black;background:#eff7ff;
+            text-align: center;
+            float: left;
+        }
+        .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+}
+    </style>
+</head>
+<body>
+    <script src="./dn.js"></script>
+    <script>
+        function dn(){
+            var passwed=document.getElementById("passwed").value
+            var user = document.getElementById("name").value
+            if(user==="150")
+            {
+                if(passwed=="12345")
+                {
+                   alert("passwed ok")
+                   localStorage.setItem('user',user)
+                   location.href="./home.html"
+                }
+                else
+                {
+                    alert("passwed no")
+                }
+            }
+            else
+            {
+                alert("user no")
+            }
+        }
+        function tozuce(){
+            location.href="./user/zuce.html"
+        }
+        function esc(){
+           location.href="./home.html"
+        }
+        function help(){
+            alert("150;12345")
+        }
+    </script>
+    <div class="div">
+        <div>
+            <h2>登陆</h2>
+        </div>
+        <div>
+            <a>用户</a>
+            <input id="name" value="150"></input>
+        </div>
+        <div>
+            <a>密码</a>
+            <input id="passwed" type="password">
+        </div>
+        <button onclick="dn()" class=".button">登陆</button>
+
+        <hr>
+        <button onclick="tozuce()">去注册</button>
+        <button onclick="other()">其他</button>
+        <button onclick="esc()">ESC</button>
+        <button onclick="help()">帮助</button>
+        <button onclick="dndn()">阿斯顿</button>
+    </div>
+    <hr>
+    <div style="text-align: center;">
+        <div>17634568997</div>
+        <div>haha</div>
+    </div>
+</body>
+</html>
