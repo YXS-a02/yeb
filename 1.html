@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>newdn</title>
+    <style>
+        .body{
+            color: #000;
+        }
+        .bleft{
+            float: left;
+            background-color: aqua;
+            width: 70%;
+            height: 200px;
+            text-align: center;
+        }
+        .bright{
+            height: 1;
+            background-color: blue;
+            height: 200px;
+            text-align: center;
+        }
+        .di{
+            background-color: blueviolet;
+            height: 40px;
+            text-align: center;
+        }
+        .top{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="top">
+            <a href="./home.html" style="color: aliceblue;text-decoration: none;">YEB</a>
+            <input id="sarah">
+            <button onclick="sarah()">sarah</button>
+
+        </div>
+        <div style="height: 25px;"></div>
+        <div class="body">
+            <div class="bleft">
+                <div><h3>登录</h3></div>
+                <div><a>用户</a><input id="name" value="150"></div>
+                <div><a>密码</a><input id="passwed" type="password"></div>
+                <div id="ing"></div>
+                <div><button onclick="dn()">登录</button><button onclick="esc()">退出</button></div>
+            </div>
+            <div class="bright">
+                <h3>选项板</h3>
+                <button onclick="ing()">ing</button><br>
+                <button onclick="help()">help</button><br>
+                <button onclick="tozuce()">3</button><br>
+                <button onclick="">4</button>
+
+            </div>
+        </div>
+        <hr>
+        <div class="di">
+            <div>3Y出品</div>
+            <div><a></a></div>
+        </div>
+    </div>
+    <script src="./olddn.js"></script>
+    <script src="./sarah.js"></script>
+    <script>
+        function ing(){
+            var ing=document.getElementById('ing')
+            ing.innerHTML='12345'
+        }
+    </script>
+</body>
+</html>

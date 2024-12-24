@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta name="viewport"/>
+    <meta charset="UTF-8" />
+    <title>YEB</title>
+</head>
+<body>
+    <script src="./sarah.js"></script>
+    <script>
+        function user(){
+            var user=0
+            user=localStorage.getItem('user',user)
+            closed.log(user)
+            var u=document.getElementById('uuuuu')
+            u.innerHTML= user
+        }
+    </script>
+    <link rel="stylesheet" href="./0.css"></link><ul class="navbar">
+        <li></li>
+        <li><input id="sarah"><button onclick="sarah()">sarah</button></li>
+        <li><div id="uuuuu"></div></li>
+        <li><button onclick="user()">dn</button></li>
+    </ul>
+    <div>
+        <h1>YEB</h1>
+        <a>v2.0</a>
+    </div>
+    <hr></hr>
+    <h2>Tool Box</h2>
+    <ul class="navbar">
+        <li><a href="./tag/jishuanqi/">计算器</a></li>
+        <li><a href="./file/dn.html">共享文件</a></li>
+    </ul>
+    <h2>Game Box</h2>
+    <ul class="navbar">
+        <li><a href="./tag/tcsa/">贪吃蛇</a></li>
+        <li><a href="./tag/5zqa/">5子棋</a></li>
+        <li><a href="./tag/2048/">2048</a></li>
+        <li><a href="./tag/g4aa/">G4</a></li>
+        <li><a href="./tag/cnxq/">象棋</a></li>
+    </ul>
+    <h2>Other</h2>
+    <ul class="navbar">
+        <li><a href="./other/about.html">关于</a></li>
+        <li><a href="./other/newing.html"></a></li>
+        <li><a href="./other/">试验场</a></li>
+    </ul>
+    <hr>
+    <a href="./dn.html">dn</a>
+    <a href="./1.html">newdn</a>
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.0/libs/cn/index.js"></script>
+    <script>
+    new CozeWebSDK.WebChatClient({
+    config: {
+    bot_id: '7442987549683187724',
+    },
+    componentProps: {
+    title: 'Coze',
+    },
+    });
+    </script>
+</body>
+</html>
