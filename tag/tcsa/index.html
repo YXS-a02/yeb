@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+  <title>贪吃蛇小游戏</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>贪吃蛇小游戏</h1>
+  <div id="lookjf"></div>
+  <canvas id="game-canvas" width="600" height="500"></canvas>
+  <button onclick="">1</button>
+ 
+  <script>
+    // 获取画布元素
+    var jf=0
+    var lookjf=document.getElementById('lookjf')
+    lookjf.innerHTML=jf
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+ 
+    // 游戏区域的宽度和高度
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+ 
+    // 蛇身每个部分的大小
+    const dotSize = 20;
+ 
+    // 蛇的移动速度
+    const snakeSpeed = 200;
+ 
+    // 初始蛇的长度
+    const initialSnakeLength = 3;
+ 
+    // 蛇的移动方向
+    let direction = 'right';
+ 
+    // 蛇的身体部分
+    let snake = [];
+ 
+    // 食物的位置
+    let foodPosition = {};
+ 
+    // 游戏是否结束的标志
+    let gameOver = false;
+ 
+    // 初始化游戏
+    function initGame() {
+      // 创建蛇的初始位置
+      for (let i = 0; i < initialSnakeLength; i++) {
+        snake.push({ x: (initialSnakeLength - 1 - i) * dotSize, y: 0 });
+      }
+ 
+      // 创建食物的位置
+      generateFood();
+ 
+      // 开始游戏循环
+      gameLoop();
+    }
+ 
+    // 创建食物的位置
+    function generateFood() {
+      const maxPos = canvasWidth / dotSize;
+ 
+      foodPosition = {
+        x: Math.floor(Math.random() * maxPos) * dotSize,
+        y: Math.floor(Math.random() * maxPos) * dotSize
+      };
+ 
+      // 检查食物是否出现在蛇的身体上，如果是，重新生成
+      for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === foodPosition.x && snake[i].y === foodPosition.y) {
+          generateFood();
+          break;
+        }
+      }
+    }
+ 
+    // 游戏循环
+    function gameLoop() {
+      if (gameOver) {
+        return;
+      }
+ 
+      setTimeout(function() {
+        moveSnake();
+        if (!gameOver) {
+          gameLoop();
+        }
+      }, snakeSpeed);
+    }
+ 
+    // 移动蛇
+    function moveSnake() {
+      // 获取蛇头的位置
+      const head = { x: snake[0].x, y: snake[0].y };
+ 
+      // 根据方向更新蛇头的位置
+      switch (direction) {
+        case 'up':
+          head.y -= dotSize;
+          break;
+        case 'down':
+          head.y += dotSize;
+          break;
+        case 'left':
+          head.x -= dotSize;
+          break;
+        case 'right':
+          head.x += dotSize;
+          break;
+      }
+ 
+      // 检查蛇头是否撞墙或撞到自己的身体
+      if (
+        head.x < 0 ||
+        head.y < 0 ||
+        head.x >= canvasWidth ||
+        head.y >= canvasHeight ||
+        checkCollision(head)
+      ) {
+        gameOver = true;
+        alert('游戏结束！');
+        return;
+      }
+ 
+      // 将新的蛇头加入到蛇身体的第一个位置
+      snake.unshift(head);
+ 
+      // 检查蛇是否吃到食物
+      if (head.x === foodPosition.x && head.y === foodPosition.y) {
+        // 生成新的食物
+        generateFood();
+      result = parseFloat(jf) + parseFloat(1);
+      document.getElementById("jf").innerText = jf;
+        
+      } else {
+        // 如果蛇没有吃到食物，移除蛇尾
+        snake.pop();
+      }
+ 
+      // 更新游戏画面
+      renderGame();
+    
+    }
+ 
+    // 检查蛇头是否和身体的其他部分重叠
+    function checkCollision(head) {
+      for (let i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+          return true;
+        }
+      }
+      return false;
+    }
+ 
+    // 更新游戏画面
+    function renderGame() {
+      // 清空画布
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+ 
+      // 绘制蛇身
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? 'green' : 'lime';
+        ctx.fillRect(snake[i].x, snake[i].y, dotSize, dotSize);
+        ctx.strokeStyle = 'black';
+        ctx.strokeRect(snake[i].x, snake[i].y, dotSize, dotSize);
+      }
+ 
+      // 绘制食物
+      ctx.fillStyle = 'red';
+      ctx.fillRect(foodPosition.x, foodPosition.y, dotSize, dotSize);
+      ctx.strokeStyle = 'black';
+      ctx.strokeRect(foodPosition.x, foodPosition.y, dotSize, dotSize);
+    }
+ 
+    // 监听键盘按键事件
+    document.addEventListener('keydown', function(event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          if (direction !== 'down') {
+            direction = 'up';
+          }
+          break;
+        case 'ArrowDown':
+          if (direction !== 'up') {
+            direction = 'down';
+          }
+          break;
+        case 'ArrowLeft':
+          if (direction !== 'right') {
+            direction = 'left';
+          }
+          break;
+        case 'ArrowRight':
+          if (direction !== 'left') {
+            direction = 'right';
+          }
+          break;
+      }
+    });
+ 
+    // 初始化游戏
+    initGame();
+
+    function newjf(){
+      document.getElementById("jf").innerText = jf;
+    }
+  </script>
+</body>
+</html>

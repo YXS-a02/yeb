@@ -1,0 +1,960 @@
+<html>
+<head>
+<title>中国象棋</title>
+<meta charset="UTF-8">
+<style>
+table{
+    margin:10px;
+    border-collapse:collapse;
+}
+table.board{
+    background-color:white;
+}
+table,td.board{
+    border:1px solid black;
+}
+ 
+td{
+    height:65px;
+    width:65px;
+     
+}
+ 
+div.pieces{
+    margin:5px;
+    height:50px;
+	line-height: 50px;cursor: pointer;
+    width:50px;
+    border:1px solid black;
+    border-radius:25px;
+    text-align:center;
+    font-family:Cursive;
+    font-size:1.5em;
+    background-color:#FAF0E6;
+}
+div.red{
+    color:#F08080
+}
+div.green{
+    color:#32CD32
+}
+</style>
+</head>
+<body>
+     
+</body>
+<script>
+     
+    //--------------------->棋盘的样子
+    (function(){
+        table = document.createElement("table");
+        table.classList.add("board");
+        tBody = document.createElement("tBody");
+        for(var i=0;i<9;i++){
+            row = tBody.insertRow(i);
+            for(var j=0;j<8;j++){
+                cell = row.insertCell(j);
+                if(i!=4){cell.classList.add("board")}
+            }
+        }
+        table.style.position="absolute";
+        table.style.top="80px";
+        table.style.left="280px";
+        table.appendChild(tBody);
+        document.body.appendChild(table);
+         
+    })();
+     
+    //--------------------->生成实际在使用的表格
+    (function(){
+        table = document.createElement("table");
+        tBody = document.createElement("tBody");
+        for(var i=0;i<10;i++){
+            row = tBody.insertRow(i);
+            for(var j=0;j<9;j++){
+                cell = row.insertCell(j);
+                cell.setAttribute("data-x",j);
+                cell.setAttribute("data-y",i);
+                cell.addEventListener("click",clickBoard,false);
+            }
+        }
+        table.appendChild(tBody);
+        table.style.position="absolute";
+        table.style.top="50px";
+        table.style.left="250px";
+        document.body.appendChild(table);
+    })();
+     
+     
+    //开始游戏字样
+    (function(){
+        beginText = document.createElement("h1");
+        beginText.style.display="inline";
+        beginText.innerHTML="游戏开始";
+        beginText.addEventListener("click",function(event){
+            chessboard.init();
+            if(!chessboard.status){
+                 
+            }
+        },false);
+        beginText.style.position="absolute";
+        beginText.style.top="200px";
+        beginText.style.left="1000px";
+        document.body.appendChild(beginText);
+         
+    })();
+     
+     
+    //走棋方展示
+    (function(){
+        turnText = document.createElement("h1");
+        turnText.innerHTML="红方";
+        turnText.style.position="absolute";
+        turnText.style.top="250px";
+        turnText.style.left="1000px";
+        document.body.appendChild(turnText);
+    })();
+     
+    //-------------------->绑定三个事件
+     
+    //点击棋盘
+    function clickBoard(event){
+        if(chessboard.status){
+            if(chessboard.curPiece){
+                var x = parseInt(this.getAttribute("data-x"));
+                var y = parseInt(this.getAttribute("data-y"));
+                 
+                //尝试移动棋子
+                chessboard.curPiece.move(x,y);
+            }
+            event.stopPropagation();
+        }else{
+            //游戏结束，什么也不做
+            event.stopPropagation();//阻止冒泡事件，因为冒泡也没有意义
+        }
+         
+    }
+     
+    //选中棋子
+    function choosePiece(event){
+        if(chessboard.status){
+            if(chessboard.turn == !!this.getAttribute("data-team") && !chessboard.curPiece){
+             
+                var x = parseInt(this.parentNode.getAttribute("data-x"));
+                var y = parseInt(this.parentNode.getAttribute("data-y"));
+                //选中棋子
+                chessboard.curPiece = chessboard.pieces[x][y];
+                 
+                chessboard.curPiece.piece.style.backgroundColor="#B0E0E6";
+                 
+                //阻止冒泡事件
+                //因为点击键盘事件是移动棋子位置事件，当前没有选中棋子，自然就不需要冒泡了
+                event.stopPropagation();
+            }
+        }else{
+            //游戏结束，什么也不做
+            event.stopPropagation();//阻止冒泡事件，因为冒泡也没有意义
+        }
+         
+    }
+     
+    //取消选中棋子
+    window.addEventListener("click",function(event){
+        if(chessboard.status){
+            if(chessboard.curPiece){
+                chessboard.curPiece.piece.style.backgroundColor="#FAF0E6";
+                chessboard.curPiece=null;
+            }
+        }else{
+            //游戏结束，什么也不做
+        }
+         
+    },false);
+     
+    //棋盘
+    chessboard = {
+        init:function(){
+            for(i=0;i<9;i++){this.pieces[i]=[]; } 
+            if(this.copyPieces){
+             
+                //直接拷贝this.copyPieces即可
+                for(var i=0;i<9;i++){
+                    if(this.copyPieces[i]){
+                        for(var j=0;j<10;j++){
+                            this.pieces[i][j]=this.copyPieces[i][j];
+                            this.pieces1[i][j]=this.copyPieces[i][j];//用于保存一步以后的棋子布局
+                            if(table.rows[j].cells[i].childNodes.length){
+                                 
+                                for(var l=0;l<table.rows[j].cells[i].childNodes.length;l++){
+                                    table.rows[j].cells[i].removeChild(table.rows[j].cells[i].childNodes[l]);
+                                }
+                            }
+                            if(this.pieces[i][j]){
+                                table.rows[j].cells[i].appendChild(this.pieces[i][j].piece);//棋盘放上棋子
+                                this.pieces[i][j].positionX=i;//设置x轴
+                                this.pieces[i][j].positionY=j;//设置y轴
+                            }
+                        }
+                    }
+                }
+            }else{
+                //第一次运行，自己创建所有棋子
+                {
+                    //红棋
+                    this.pieces[0][9] = new Car("CarR1",0,9,true);
+                    this.pieces[1][9] = new Horse("HorseR1",1,9,true);
+                    this.pieces[1][7] = new Cannon("CannonR1",1,7,true);
+                    this.pieces[2][9] = new Elephant("ElephantR1",2,9,true,"相");
+                    this.pieces[3][9] = new Bodyguards("BodyguardsR1",3,9,true);
+                    this.pieces[4][9] = new Boss("bossR",4,9,true,"帅");
+                    this.redBoss=this.pieces[4][9];
+                    this.pieces[5][9] = new Bodyguards("BodyguardsR2",5,9,true);
+                    this.pieces[6][9] = new Elephant("ElephantR2",6,9,true,"相");
+                    this.pieces[7][7] = new Cannon("CannonR2",7,7,true);
+                    this.pieces[7][9] = new Horse("HorseR2",7,9,true);
+                    this.pieces[8][9] = new Car("CarR2",8,9,true);
+                     
+                    this.pieces[0][6] = new Soldier("SoldierR1",0,6,true,"兵");
+                    this.pieces[2][6] = new Soldier("SoldierR2",2,6,true,"兵");
+                    this.pieces[4][6] = new Soldier("SoldierR3",4,6,true,"兵");
+                    this.pieces[6][6] = new Soldier("SoldierR4",6,6,true,"兵");
+                    this.pieces[8][6] = new Soldier("SoldierR5",8,6,true,"兵");
+                     
+                    //黑棋
+                    this.pieces[0][0] = new Car("CarG1",0,0,false);
+                    this.pieces[1][0] = new Horse("HorseG1",1,0,false);
+                    this.pieces[1][2] = new Cannon("CannonG1",1,2,false);
+                    this.pieces[2][0] = new Elephant("ElephantG1",2,0,false,"象");
+                    this.pieces[3][0] = new Bodyguards("BodyguardsG1",3,0,false);
+                    this.pieces[4][0] = new Boss("bossG",4,0,false,"将");
+                    this.greenBoss=this.pieces[4][0];
+                    this.pieces[5][0] = new Bodyguards("BodyguardsG2",5,0,false);
+                    this.pieces[6][0] = new Elephant("ElephantG2",6,0,false,"象");
+                    this.pieces[7][2] = new Cannon("CannonG2",7,2,false);
+                    this.pieces[7][0] = new Horse("HorseG2",7,0,false);
+                    this.pieces[8][0] = new Car("CarG2",8,0,false);
+                     
+                    this.pieces[0][3] = new Soldier("SoldierR1",0,3,false,"卒");
+                    this.pieces[2][3] = new Soldier("SoldierR2",2,3,false,"卒");
+                    this.pieces[4][3] = new Soldier("SoldierR3",4,3,false,"卒");
+                    this.pieces[6][3] = new Soldier("SoldierR4",6,3,false,"卒");
+                    this.pieces[8][3] = new Soldier("SoldierR5",8,3,false,"卒");
+                }
+                 
+                this.copyPieces=[];
+                for(var i=0;i<9;i++){
+                    if(this.pieces[i]){
+                        this.copyPieces[i]=[]; 
+                        for(var j=0;j<10;j++){
+                            this.copyPieces[i][j]=this.pieces[i][j];
+                            this.pieces1[i][j]=this.pieces[i][j];
+                        }
+                    }
+                }
+                 
+                //绑定事件单击
+                var divs = document.getElementsByClassName("pieces");
+                for(var i=0;i<divs.length;i++){divs[i].addEventListener("click",choosePiece,false);}
+            }
+            this.status = true;
+            this.turn = true;
+            turnText.innerHTML="红方";
+        },
+        gameOver:function (winner){
+            if(winner){alert("红方胜利")}else{alert("黑方胜利")}
+            this.status=false;
+        },
+        changeTurn:function(){
+            this.turn = !this.turn;
+            chessboard.curPiece.piece.style.backgroundColor="#FAF0E6";
+            //当前选中棋子置换为null
+            chessboard.curPiece=null;
+            if(this.turn){turnText.innerHTML="红方"}else{turnText.innerHTML="黑方"}
+             
+            if(beKillAnyWay(this.turn)){
+                alert("绝杀！");
+                chessboard.gameOver(!this.turn);
+            }
+             
+        },
+        status:true,//游戏的状态,true:正在玩，false:结束了
+        redBoss:null,
+        greenBoss:null,
+        curPiece:null,
+        pieces:[],//存放棋子当前布局状态
+        pieces1:[[],[],[],[],[],[],[],[],[]],//存放棋子走过一步后的布局状态
+        copyPieces:null,//存放棋子布局的初始状态
+        turn:true,//红先黑后,true:红
+    };
+      
+    //检查跳的位置上是否有对手棋子
+    //有：返回true
+    //没有：返回false
+    function checkEnemy(x,y){
+        if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team != this.team){
+            return true;
+        }
+        return false;
+    }
+     
+    //击杀对手棋子
+    function killEnemy(x,y){
+        chessboard.pieces[x][y].beKill();
+    }
+     
+    //是否将军
+    function canKilBoss(x,y){
+         
+        if(this.team){
+            for(var i=0;i<chessboard.pieces.length;i++){
+                for(var j=0;j<chessboard.pieces[i].length;j++){
+                    if(chessboard.pieces[i][j] && chessboard.pieces[i][j].team == this.team){
+                     
+                        if(chessboard.pieces[i][j].checkPath(chessboard.greenBoss.positionX,chessboard.greenBoss.positionY)){return true;}
+                    }
+                }
+            }
+            return false;
+        }else{
+            for(var i=0;i<chessboard.pieces.length;i++){
+                for(var j=0;j<chessboard.pieces[i].length;j++){
+                    if(chessboard.pieces[i][j] && chessboard.pieces[i][j].team == this.team){
+                        if(chessboard.pieces[i][j].checkPath(chessboard.redBoss.positionX,chessboard.redBoss.positionY)){return true};
+                    }
+                }
+            }
+            return false;
+        }
+    }
+ 
+    //被击杀
+    function beKill(){
+        chessboard.pieces[this.positionX][this.positionY]=null;
+        chessboard.pieces1[this.positionX][this.positionY]=null;
+         
+        this.piece.parentNode.removeChild(this.piece);
+        if(this.name=="将" || this.name=="帅"){
+            chessboard.gameOver(!this.team);
+        }
+    }
+     
+    function check(x,y){
+        if(this.checkPath(x,y) && this.checkBoss(x,y)){
+            return true;
+        }
+        return false;
+    }
+     
+    //检查是否被绝杀
+    //会：返回true，不会：返回false
+    function beKillAnyWay(turn){
+        for(var i=0;i<9;i++){
+            for(var j=0;j<10;j++){
+                if(chessboard.pieces[i][j] && chessboard.pieces[i][j].team == turn){
+                    var paths = chessboard.pieces[i][j].pathCanGo();
+                    for(var l=0;l<paths.length;l++){
+                        if(!chessboard.pieces[i][j].canBeKilBoss(paths[l]["x"],paths[l]["y"])){return false;}
+                    }
+                }
+            }
+        }
+        return true;
+         
+    }
+     
+    //走出这步后会不会送将
+    //会：返回true，不会：返回false
+    function canBeKilBoss(x,y){
+         
+         
+         
+        //pieces1置换为1步以后的状态
+        var tempPiece = chessboard.pieces1[x][y];
+        chessboard.pieces1[this.positionX][this.positionY]=null;
+        chessboard.pieces1[x][y]=this;
+         
+         
+        //this也置换为一步以后的状态
+        var tempX = this.positionX;
+        var tempY = this.positionY;
+         
+        this.positionX=x;
+        this.positionY=y;
+         
+        if(this.team){
+            for(var i=0;i<9;i++){
+                for(var j=0;j<10;j++){
+                    if(chessboard.pieces1[i][j] && !chessboard.pieces1[i][j].team){
+                        if(chessboard.pieces1[i][j].checkPath(chessboard.redBoss.positionX,chessboard.redBoss.positionY,chessboard.pieces1)){
+                            //恢复之前的状态
+                            this.positionX=tempX;
+                            this.positionY=tempY;
+                            chessboard.pieces1[this.positionX][this.positionY]=this;
+                            chessboard.pieces1[x][y]=tempPiece;
+                             
+                            return true;
+                        }
+                    }
+                }
+            }
+        }else{
+             
+            for(var i=0;i<9;i++){
+                for(var j=0;j<10;j++){
+                    if(chessboard.pieces1[i][j] && chessboard.pieces1[i][j].team){
+                        if(chessboard.pieces1[i][j].checkPath(chessboard.greenBoss.positionX,chessboard.greenBoss.positionY,chessboard.pieces1)){
+                            //恢复之前的状态
+                            this.positionX=tempX;
+                            this.positionY=tempY;
+                            chessboard.pieces1[this.positionX][this.positionY]=this;
+                            chessboard.pieces1[x][y]=tempPiece;
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+         
+        //恢复之前的状态
+        this.positionX=tempX;
+        this.positionY=tempY;
+         
+        chessboard.pieces1[this.positionX][this.positionY]=this;
+        chessboard.pieces1[x][y]=null;
+         
+        return false;
+    }
+     
+    //移动棋子
+    function move(x,y){
+        if(this.check(x,y)){
+            //有对手的棋子，则吃掉对手棋子
+            if(this.checkEnemy(x,y)){killEnemy(x,y);}
+            this.doMove(x,y);
+            //换手
+            chessboard.changeTurn();
+             
+            if(chessboard.status && this.canKilBoss(x,y)){alert("将军！")}
+        }
+    }
+     
+    //实际调整棋子的位置
+    function doMove(x,y){
+        //棋子移动至这个位置
+        this.piece.parentNode.removeChild(this.piece);
+        table.rows[y].cells[x].appendChild(this.piece);
+         
+        //二维数组处放置当前棋子
+        chessboard.pieces[x][y]=this;
+        chessboard.pieces[this.positionX][this.positionY]=null;
+         
+        //一步后的二维数组同步更新
+        chessboard.pieces1[x][y]=this;
+        chessboard.pieces1[this.positionX][this.positionY]=null;
+         
+        this.positionX=x;
+        this.positionY=y;
+    }
+     
+    //棋子的父类，定义了一些方法，供继承使用（但是发现这个继承用处不大，甚至有些负作用）
+    function Pieces(){
+        this.checkEnemy=checkEnemy;
+        this.killEnemy=killEnemy;
+        this.beKill=beKill;
+        this.canKilBoss=canKilBoss;
+        this.canBeKilBoss=canBeKilBoss;
+        this.move=move;
+        this.doMove=doMove;
+        this.checkBoss=checkBoss;
+        this.check=check;
+    }
+     
+    //判断车的位置是否合法
+    function checkCarPath(x,y,chessArr){
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        if((this.positionX==x && this.positionY!=y) || (this.positionX!=x && this.positionY==y)){
+            //前进路线中不能有任何障碍
+            if(this.positionX==x){
+                for(var i= Math.min(this.positionY,y) + 1; i< Math.max(this.positionY,y);i++){
+                    if(chessArr){
+                        if(chessArr[x][i]){return false;}
+                    }else{
+                        if(chessboard.pieces[x][i]){return false;}
+                    }
+                }
+            }else{
+                for(var i= Math.min(this.positionX,x) + 1; i< Math.max(this.positionX,x);i++){
+                    if(chessArr){
+                        if(chessArr[i][y]){return false;}
+                    }else{
+                         
+                        if(chessboard.pieces[i][y]){return false;}
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+     
+    //车可以移动的位置
+    function pathCanGo_car(chessArr){
+        var paths = [];
+         
+        //x不变，y轴上可以移动的位置
+        for(var i=0;i<9;i++){
+            if(i != this.positionY && this.check(this.positionX,i)){paths.push({"x":this.positionX,"y":i});}
+            }
+        //y不变，x轴上可以移动的位置
+        for(var i=0;i<10;i++){
+            if(i != this.positionX && this.check(i,this.positionY)){paths.push({"x":i,"y":this.positionY});}
+        }
+        return paths;
+    }
+     
+    //车
+    function Car(nID,nX,nY,nTeam){
+        this.name="车";
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+        this.checkPath=checkCarPath;
+        this.pathCanGo=pathCanGo_car;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //判断马的位置是否合法
+    function checkHorsePath(x,y,chessArr){
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        //马走日字
+        if(Math.abs(x-this.positionX)==2 && Math.abs(y-this.positionY)==1){
+            //蹩马腿
+            if(chessboard.pieces[(x+this.positionX)/2][this.positionY]){return false;}
+            return true;
+        }
+        if(Math.abs(x-this.positionX)==1 && Math.abs(y-this.positionY)==2){
+            //蹩马腿
+            if(chessboard.pieces[this.positionX][(y+this.positionY)/2]){return false;}
+            return true;
+        }
+        return false;
+    }
+     
+    //马可以移动的位置
+    function pathCanGo_Horse(){
+        var paths = [];
+        //右二下一
+        if(this.check(this.positionX+2,this.positionY+1)){paths.push({"x":this.positionX+2,"y":this.positionY+1});}
+        //右二上一
+        if(this.check(this.positionX+2,this.positionY-1)){paths.push({"x":this.positionX+2,"y":this.positionY-1});}
+        //左二下一
+        if(this.check(this.positionX-2,this.positionY+1)){paths.push({"x":this.positionX-2,"y":this.positionY+1});}
+        //左二上一
+        if(this.check(this.positionX-2,this.positionY-1)){paths.push({"x":this.positionX-2,"y":this.positionY-1});}
+        //右一下二
+        if(this.check(this.positionX+1,this.positionY+2)){paths.push({"x":this.positionX+1,"y":this.positionY+2});}
+        //右一上二
+        if(this.check(this.positionX+1,this.positionY-2)){paths.push({"x":this.positionX+1,"y":this.positionY-2});}
+        //左一下二
+        if(this.check(this.positionX-1,this.positionY+2)){paths.push({"x":this.positionX-1,"y":this.positionY+2});}
+        //左一上二
+        if(this.check(this.positionX-1,this.positionY-2)){paths.push({"x":this.positionX-1,"y":this.positionY-2});}
+        return paths;
+    }
+     
+    //马
+    function Horse(nID,nX,nY,nTeam){
+        this.name="马";
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+        this.checkPath=checkHorsePath;
+        this.pathCanGo=pathCanGo_Horse;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //判断象的位置是否合法
+    function checkElephantPath(x,y,chessArr){
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        //不能过河
+        if(this.team){if(y<5){return false;}}
+        else{if(y>4){return false;}}
+         
+        //象走田字
+        if(Math.abs(x-this.positionX)==2 && Math.abs(y-this.positionY)==2){
+            //蹩象腿
+            if(!chessboard.pieces[(x+this.positionX)/2][(y+this.positionY)/2]){
+                return true;
+            }
+        }
+        return false;    
+    }
+     
+    //象可以移动的位置
+    function pathCanGo_Elephant(){
+        var paths = [];
+        //右二下二
+        if(this.check(this.positionX+2,this.positionY+2)){paths.push({"x":this.positionX+2,"y":this.positionY+2});}
+        //右二上二
+        if(this.check(this.positionX+2,this.positionY-2)){paths.push({"x":this.positionX+2,"y":this.positionY-2});}
+        //左二下二
+        if(this.check(this.positionX-2,this.positionY+2)){paths.push({"x":this.positionX-2,"y":this.positionY+2});}
+        //左二上二
+        if(this.check(this.positionX-2,this.positionY-2)){paths.push({"x":this.positionX-2,"y":this.positionY-2});}
+        return paths;
+    }
+     
+    //象
+    function Elephant(nID,nX,nY,nTeam,name){
+        this.name=name;
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+        this.checkPath=checkElephantPath;
+        this.pathCanGo=pathCanGo_Elephant;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //判断士的位置是否合法
+    function checkBodyguardsPath(x,y,chessArr){
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        //x轴不能出九宫格
+        if(x!=3 && x!=4 && x!=5){return false;}
+         
+        //y轴不能出九宫格
+        if(this.team){if(y<7){return false;}}
+        else{if(y>2){return false;}}
+         
+        //士斜着走一步
+        if(Math.abs(x-this.positionX)==1 && Math.abs(y-this.positionY)==1){
+            return true;
+        }
+        return false;
+    }
+     
+    //士可以移动的位置
+    function pathCanGo_Bodyguards(){
+        var paths = [];
+        if(this.check(this.positionX+1,this.positionY+1)){
+            paths.push({"x":this.positionX+1,"y":this.positionY+1});
+        }
+        if(this.check(this.positionX+1,this.positionY-1)){
+            paths.push({"x":this.positionX+1,"y":this.positionY-1});
+        }
+        if(this.check(this.positionX-1,this.positionY+1)){
+            paths.push({"x":this.positionX-1,"y":this.positionY+1});
+        }
+        if(this.check(this.positionX-1,this.positionY-1)){
+            paths.push({"x":this.positionX-1,"y":this.positionY-1});
+        }
+        return paths;
+    }
+     
+    //士，找不到合适的单词，构造器意为保镖
+    function Bodyguards(nID,nX,nY,nTeam){
+        this.name="士";
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+        this.checkPath=checkBodyguardsPath;
+        this.pathCanGo=pathCanGo_Bodyguards;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //将/帅的位置是否合法
+    function checkBossPath(x,y,chessArr){
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        if(x!=3 && x!=4 && x!=5){return false;}
+        if(this.team){if(y<7){return false;}}
+        else{if(y > 2){return false;}}
+        if(Math.abs(x-this.positionX)==1 && Math.abs(y-this.positionY)==0){
+            return true;
+        }
+        if(Math.abs(x-this.positionX)==0 && Math.abs(y-this.positionY)==1){
+            return true;
+        }
+        return false;
+    }
+     
+    //将可以移动的位置
+    function pathCanGo_Boss(){
+        var paths=[];
+        if(this.check(this.positionX+1,this.positionY)){paths.push({"x":this.positionX+1,"y":this.positionY})}
+        if(this.check(this.positionX-1,this.positionY)){paths.push({"x":this.positionX-1,"y":this.positionY})}
+        if(this.check(this.positionX,this.positionY+1)){paths.push({"x":this.positionX,"y":this.positionY+1})}
+        if(this.check(this.positionX,this.positionY-1)){paths.push({"x":this.positionX,"y":this.positionY-1})}
+        return paths;
+    }
+     
+    //将，帅
+    function Boss(nID,nX,nY,nTeam,name){
+        this.name=name;
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+         
+        this.checkPath=checkBossPath;
+        this.pathCanGo=pathCanGo_Boss;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //兵/卒的位置是否合法
+    function checkSoldierPath(x,y,chessArr){
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        if(this.team){
+            //不能后退
+            if(y>this.positionY){return false;}
+            //前进，合法
+            if(Math.abs(x-this.positionX)==0 && Math.abs(y-this.positionY)==1){
+             
+                return true;
+            }
+            //过河后可以横向移动，然而也只能走一步
+            if(this.positionY<5){
+                if(Math.abs(x-this.positionX)==1 && Math.abs(y-this.positionY)==0){
+                    return true;
+                }
+            }
+        }else{
+            //不能后退
+            if(y<this.positionY){return false;}
+            //前进，合法
+            if(Math.abs(x-this.positionX)==0 && Math.abs(y-this.positionY)==1){
+                return true;
+            }
+            //过河后可以横向移动，然而也只能走一步
+            if(this.positionY>4){
+                if(Math.abs(x-this.positionX)==1 && Math.abs(y-this.positionY)==0){
+                    return true;
+                }
+            }
+        }
+         
+        return false;
+    }
+     
+    //兵/卒可以移动的位置
+    function pathCanGo_Soldier(){
+        var paths = [];
+        if(this.team){
+            if(this.check(this.positionX,this.positionY-1)){paths.push({"x":this.positionX,"y":this.positionY-1});}
+            if(this.positionY<5){
+                if(this.check(this.positionX+1,this.positionY)){paths.push({"x":this.positionX+1,"y":this.positionY});}
+                if(this.check(this.positionX-1,this.positionY)){paths.push({"x":this.positionX-1,"y":this.positionY});}
+            }
+        }else{
+            if(this.check(this.positionX,this.positionY+1)){paths.push({"x":this.positionX,"y":this.positionY+1});}
+            if(this.positionY>4){
+                if(this.check(this.positionX+1,this.positionY)){paths.push({"x":this.positionX+1,"y":this.positionY});}
+                if(this.check(this.positionX-1,this.positionY)){paths.push({"x":this.positionX-1,"y":this.positionY});}
+            }
+        }
+        return paths;
+    }
+     
+    //兵
+    function Soldier(nID,nX,nY,nTeam,name){
+        this.name=name;
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+        this.checkPath=checkSoldierPath;
+        this.pathCanGo=pathCanGo_Soldier;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //炮的位置是否合法
+    function checkCannonPath(x,y,chessArr){
+     
+        if(x<0 || x>8 || y<0 || y>9){return false;}
+        if(chessArr){
+            if(chessArr[x][y] && chessArr[x][y].team == this.team){return false;}
+        }else{
+            if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team == this.team){return false;}
+        }
+        //炮走直线
+        if(this.positionX==x || this.positionY==y){
+            var count = 0;//计数路线上的障碍
+            if(this.positionX==x){count = count2Piece("y",this.positionY,y,x,chessArr);}
+            else{count = count2Piece("x",this.positionX,x,y,chessArr);}
+            //没有障碍，切目标位置没有棋子，合法
+            if(chessArr){
+                 
+                if(count==0 && !chessArr[x][y]){
+                    return true;
+                }
+                //有一个障碍
+                if(count==1){
+                    //且目标位置上有对手棋子，合法
+                    if(chessArr[x][y] && chessArr[x][y].team != this.team){
+                        return true;
+                    }
+                }
+            }else{
+                if(count==0 && !chessboard.pieces[x][y]){
+                    return true;
+                }
+                //有一个障碍
+                if(count==1){
+                    //且目标位置上有对手棋子，合法
+                    if(chessboard.pieces[x][y] && chessboard.pieces[x][y].team != this.team){
+                        return true;
+                    }
+                }
+            }
+             
+        }
+        //其余情况均不合法
+        return false;
+    }
+     
+    //泡可以移动的位置
+    function pathCanGo_Cannon(){
+        var paths = [];
+        for(var i=0;i<10;i++){
+            if(i!=this.positionY && this.check(this.positionX,i)){paths.push({"x":this.positionX,"y":i})}
+        }
+        for(var i=0;i<9;i++){
+            if(i!=this.positionX && this.check(i,this.positionY)){paths.push({"x":i,"y":this.positionY})}
+        }
+        return paths;
+    }
+     
+    //炮
+    function Cannon(nID,nX,nY,nTeam){
+        this.name="炮";
+        this.ID=nID;
+        this.positionX=nX;
+        this.positionY=nY;
+        this.team=!!nTeam;
+        this.checkPath=checkCannonPath;
+        this.pathCanGo=pathCanGo_Cannon;
+        this.piece = createPieces(this.name,this.positionX,this.positionY,this.name,this.team);
+    }
+     
+    //检查老将问题
+    function checkBoss(x,y,chessArr){
+         
+        if(this.canBeKilBoss(x,y,chessArr)){
+            return false;
+        }
+        if(this.name == "将" || this.name == "帅"){//将要移动的是将
+            if(this.team){//帅
+                if(x!=chessboard.greenBoss.positionX){return true;}
+                var count = count2Piece("y",y,chessboard.greenBoss.positionY,x,chessArr);
+                return count > 0;
+            }else{//将
+                if(x!=chessboard.redBoss.positionX){return true;}
+                var count = count2Piece("y",y,chessboard.redBoss.positionY,x,chessArr);
+                return count>0;
+            }
+        }else{//将要移动的不是将
+         
+            //两方的将不在同一条线，通过
+            if(chessboard.redBoss.positionX != chessboard.greenBoss.positionX){
+                return true;
+            }
+             
+            var count=count2Piece("y",chessboard.redBoss.positionY,chessboard.greenBoss.positionY,chessboard.redBoss.positionX,chessArr);
+             
+            //新的位置在两个老将的x轴上，且y轴在两个老将之间
+            if(x == chessboard.redBoss.positionX && y < chessboard.redBoss.positionY && y > chessboard.greenBoss.positionY){count++;}
+            //旧的位置在两个老将的x轴上，且y轴在两个老将之间
+            if(this.positionX == chessboard.redBoss.positionX && y < chessboard.redBoss.positionY && y > chessboard.greenBoss.positionY){count--;}
+            return count>0;
+             
+        }
+         
+    }
+    /**
+        计算在一条线上的两个棋子“之间”的棋子数量
+        @param XOrY 计算x轴还是y轴上的棋子数量
+        @param a1 要计算的轴上的两点中的一点
+        @param a2 要计算的轴上的两点中的一点
+        @param a3 不需要计算的轴上的值
+        @param chessArr 要在哪个棋子布局上计算
+    */
+    function count2Piece(XOrY,a1,a2,a3,chessArr){
+     
+        var count=0;
+        if(XOrY=='x' || XOrY=='X'){
+            for(var i= Math.min(a1,a2) + 1;i< Math.max(a1,a2);i++){
+                if(chessArr){
+                    if(chessArr[i][a3]){++count;}
+                }else{
+                    if(chessboard.pieces[i][a3]){++count;}
+                }
+            }
+        }else{
+            for(var i= Math.min(a1,a2) + 1;i< Math.max(a1,a2);i++){
+                if(chessArr){
+                    if(chessArr[a3][i]){++count;}
+                }else{
+                    if(chessboard.pieces[a3][i]){++count;}
+                }
+                 
+            }
+        }
+        return count;
+    }
+     
+    //在dom中创建棋子
+    function createPieces(ID,x,y,name,team){
+        var div = document.createElement("div");
+        div.setAttribute("data-team",team?"red":"");
+        div.classList.add("pieces");
+        div.classList.add(team?"red":"green");
+        div.appendChild(document.createTextNode(name));
+        tBody.rows[y].cells[x].appendChild(div);
+        return div;
+    }
+     
+    var p = new Pieces();
+    Car.prototype=p;
+    Horse.prototype=p;
+    Elephant.prototype=p;
+    Bodyguards.prototype=p;
+    Boss.prototype=p;
+    Soldier.prototype=p;
+    Cannon.prototype=p;
+     
+    chessboard.init();
+     
+</script>
+</html>
