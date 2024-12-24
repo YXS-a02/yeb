@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>注册</title>
+    <style>
+        body{
+            background-color: grey;
+        }
+        .div{
+            text-align: center;
+		    padding:8px;border:1px solid #96c2f1;background:#eff7ff
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="div">
+            <div>
+                <h2>注册</h2>
+            </div>
+            <div>
+                <a>户名</a>
+                <input id="nu">
+            </div>
+            <div>
+                <a>密码</a>
+                <input id="np">
+            </div>
+            <div>
+                <button onclick="zc()">注册</button>
+                <button>返回</button>
+            </div>
+            <hr>
+            <div></div>
+        </div>
+    </div>
+    <script>
+        function zc(){
+            var nu=Math.floor(Math.random() * 10);
+            var np=Math.floor(Math.random() * 10);
+            var db = openDatabase('user', '1.0', 'user', 8 * 1024 * 1024);
+            db.transaction(function (tx) {  
+                tx.executeSql('CREATE TABLE IF NOT EXISTS user (id unique, log)');
+                tx.executeSql('INSERT INTO user (id, log) VALUES (1, nu)');
+                tx.executeSql('INSERT INTO user (id, log) VALUES (1, np)');
+            });
+
+            alert("失败")
+        }
+        function esc(){
+            location.history(-1)
+        }
+
+    </script> 
+</body>
+</html>
