@@ -1,15 +1,32 @@
-function dn() {
-    var passwed=document.getElementById("passwed").value
-    var name=document.getElementById("user").value
-    const mysql = require('mysql');
-    const connection = mysql.createConnection({
-      host: '',
-      user: 'root',
-      password: '150abcd051',
-      database: 'yeb'
-    });
-    connection.connect((err) => {
-      if (err) throw err;
-      console.log('Connected to MySQL server!');
-    });
-}
+function dn(){
+            var passwed=document.getElementById("passwed").value
+            var user = document.getElementById("name").value
+            var ing=document.getElementById('ing')
+            ing.innerHTML='logining'
+            if(user==="150")
+            {
+                if(passwed=="12345")
+                {
+                    ing.innerHTML='ok'
+                   localStorage.setItem('user',user)
+                   location.href="../../index.html"
+                }
+                else
+                {
+                    ing.innerHTML='passwed no'    
+                }
+            }
+            else
+            {
+                ing.innerHTML='user no'  
+            }
+        }
+        function tozuce(){
+            location.href="./user/zuce.html"
+        }
+        function esc(){
+           location.href="../../index.html"
+        }
+        function help(){
+            alert("150;12345")
+        }
