@@ -1,11 +1,25 @@
-function sarah(){
-    var sarah=document.getElementById("sarah").value
-    
-    if (sarah=="yeb") {
-       alert("Is there!") 
+function checkInput(elementId,name) {
+    var input = document.getElementById(elementId).value;
+
+    if (input === name) {
+        return true;
+    } else {
+        return false;
     }
-    else
-    {
-        alert("sorry，I don't know!")
+}
+
+function sarah() {
+    if (checkInput("sarah","yeb")) {
+        alert("Is there!");
+    } else {
+        handleOtherCase();
+    }
+}
+
+function handleOtherCase() {
+    if (checkInput("sarah","/")) {
+        alert("......")
+    } else {
+        alert("sorry, I don't know!");
     }
 }
