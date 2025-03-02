@@ -7,9 +7,24 @@
             body{
                 text-align: center;
             }
+            .top{
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: #333;
+                height: 23px;
+                display: flex;
+            }
         </style>  
     </head>
     <body style="">
+        <div class="top">
+            <a href="../home.html" style="color: aliceblue;text-decoration: none;">YEB</a>
+            <input id="sarah">
+            <button onclick="sarah()">sarah</button>
+            <div id="sud" style="color: aliceblue;"></div>
+        </div>
         <h1>关于(v.3)</h1>
         <hr></hr>
         <div class="div.a">Y的网站</div>
@@ -21,5 +36,14 @@
             <div>项目开源到</div>
             <div><a href="http://www.gitee.com/yxsa/yeb">gitee</a></div>
         </div>
+        <script>
+            user()
+            function user(){
+                var user=0
+                user=localStorage.getItem('user',user)
+                var u=document.getElementById('sud')
+                u.innerHTML= user
+            }
+        </script>
     </body>
 </html>
