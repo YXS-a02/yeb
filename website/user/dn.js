@@ -22,11 +22,17 @@ function dn(){
             }
         }
         function tozuce(){
-            location.href="./user/zuce.html"
+            location.href="./zuce.html"
         }
         function esc(){
            location.href="../../index.html"
         }
         function help(){
             alert("150;12345")
+        }
+        function testout() {
+            // 前端获取参数值
+            const urlParams = new URLSearchParams(window.location.search);
+            const ov = urlParams.get('key'); // 得到 "1"
+            alert(ov)
         }
