@@ -7,21 +7,21 @@
 </head>
 <body>
     <script src="./website/sarah.js"></script>
-    <script>
-        function user(){
-            var user=0
-            user=localStorage.getItem('user',user)
-            closed.log(user)
-            var u=document.getElementById('uuuuu')
-            u.innerHTML= user
-        }
-    </script>
     <link rel="stylesheet" href="./0.css"></link><ul class="navbar">
         <li></li>
         <li><input id="sarah"><button onclick="sarah()">sarah</button></li>
-        <li><div id="uuuuu"></div></li>
+        <li><div id="sud" style="display: flex;"></div></li>
         <li><button onclick="user()">dn</button></li>
     </ul>
+    <script>
+        user()
+        function user(){
+            var userid=0
+            userid=localStorage.getItem('user',user)
+            var u=document.getElementById('sud')
+            u.innerHTML= userid
+        }
+    </script>
     <div>
         <h1>YEB</h1>
         <a>v2.0</a>
