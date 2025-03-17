@@ -4,7 +4,7 @@
 
 自写网页一个，无啥好看的 
 包含html+css+js、php、asp
-freehosts4u:<a href="http://yeb.7749.org">yeb.7749.org</a>
+<a href="http://yeb.7749.org">freehosts4u</a>
 
 #### 软件架构
 
