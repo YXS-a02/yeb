@@ -5,28 +5,44 @@
     <style>
         .inline-forms { display: flex; }
         .inline-forms form { margin-right: 10px; }
+        .popup {display: none;position: fixed;left: 50%;top: 50%;transform: translate(-50%, -50%);width: 200px;height: 175px;background-color: gray;border: 1px solid #ccc;padding: 20px;z-index: 9999;}
     </style>
 </head>
 <body>
+<script>
+    // 显示弹窗
+    function showA() {document.getElementById('upl').style.display = 'block';}
+    function showB() {document.getElementById('newd').style.display = 'block';}
+    // 隐藏弹窗
+    function hideA() {document.getElementById('upl').style.display = 'none';}
+    function hideB() {document.getElementById('newd').style.display = 'none';}
+</script>
 <h1>文件管理器</h1>
-
 <!-- Inline forms for upload and new directory -->
-<div class="inline-forms">
+<div class="inline-forms" style="text-align: center">
     <!-- 文件上传表单 -->
-    <form action="" method="post" enctype="multipart/form-data">
-        上传
-        <input type="file" name="uploadFile" style="font-size:10px">
-        <input type="submit" value="上传">
-    </form>
-
+    <div id="upl" class="popup">
+        <form action="" method="post" enctype="multipart/form-data">
+            <div style="background-color:blue;">上传</div>
+            <input type="file" name="uploadFile" style="font-size:10px"><br>
+            <input type="submit" value="上传"><br>
+            <button onclick="hideA()">关闭</button>
+        </form>
+    </div>
     <!-- 创建新目录表单 -->
-    <form action="" method="post">
-        新建目录
-        <input type="text" name="newDir">
-        <input type="submit" value="创建">
-    </form>
+    <div id="newd" class="popup">
+        <form action="" method="post">
+            <div style="background-color:blue;">新建目录</div>
+            <input type="submit" value="创建"><br>
+            <input type="text" name="newDir"><br>
+            <button onclick="hideA()">关闭</button>
+        </form>
+    </div>
+    <div style="background-color:black;">
+        <button onclick="showA()">上传</button>
+        <button onclick="showB()">新建文件夹</button>
+    </div>
 </div>
-
 <?php
 $directory = __DIR__; // 获取当前脚本所在的目录
 
@@ -76,7 +92,7 @@ $files = scandir($directory);
         <th>操作</th>
     </tr>
     <?php foreach ($files as $file): ?>
-        <?php if ($file !== '.' && $file !== '..'): ?>
+        <?php if ($file !== '.' && $file !== '..' && $file !== 'index.php' && $file !== 'web.config'): ?>
             <?php $filePath = "$directory/$file"; ?>
             <tr>
                 <td><a href="<?php echo htmlspecialchars($file); ?>" target="_blank"><?php echo htmlspecialchars($file); ?></a></td>
