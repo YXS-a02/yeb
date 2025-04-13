@@ -21,7 +21,8 @@ function load_messages() {
     fetch('chat.txt')
     .then(response => response.text())
     .then(data => {
-        document.getElementById('messages').innerHTML = '<pre>' + data.replace(/\n/g, '<br>') + '</pre>';
+        console.log('he');
+        document.getElementById('messages').innerHTML = data.replace(/\n/g, '<br>');
     });
 }
 

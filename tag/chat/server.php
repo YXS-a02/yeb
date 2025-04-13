@@ -28,17 +28,7 @@ function saveMessage($pdo, $username, $message){
         return false;
     }
 }
-function fetchMessages($pdo){
-    $query = "SELECT * FROM messages ORDER BY timestamp ASC";
-    $result_set = $pdo->query($query);
-    
-    while($row = $result_set->fetch(PDO::FETCH_ASSOC)){
-        echo "<div>";
-        echo htmlspecialchars($row['username']) . ": ";
-        echo htmlspecialchars($row['message']);
-        echo "</div><br/>";
-    }
-}
+   
 // chat_send_ajax.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = htmlspecialchars(trim($_POST['username']));
@@ -49,10 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         saveMessage($pdo,$username,$message);
         echo json_encode(['status' => 'success']);
     } else {
-        echo json_encode(['status' => 'error', 'msg' => 'Empty fields!']);
+        echo json_encode(['status' => 'error', 'msg' => '不能为空!']);
     }
 } else {
     echo json_encode(['status' => 'error', 'msg' => 'Invalid request method!']);
 }
 ?>
+
 
