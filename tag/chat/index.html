@@ -3,43 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Simple Chat Room</title>
-    <script>
-        function set_chat_msg() {
-            const username = document.getElementById('username').value;
-            const message = document.getElementById('message').value;
-
-            fetch('server.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: `username=${encodeURIComponent(username)}&message=${encodeURIComponent(message)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    load_messages();
-                } else {
-                    alert(data.msg);
-                }
-            });
-        }
-
-        function load_messages() {
-            fetch('chat.txt')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('messages').innerHTML = '<pre>' + data.replace(/\n/g, '<br>') + '</pre>';
-            });
-        }
-
-        setInterval(load_messages, 2000); // 每隔两秒加载一次消息
-    </script>
+    <link rel="stylesheet" href="./0.css">
+    <script src="./chat.js"></script>
 </head>
 <body onload="load_messages()">
     <h3>Chat Room</h3>
-    Username: <input type="text" id="username"><br><br>
-    Message: <textarea id="message"></textarea><br>
+    Message<textarea id="message"></textarea><br>
     <button onclick="set_chat_msg()">Send</button>
-
+    <hr>
     <div id="messages"></div>
 </body>
 </html>

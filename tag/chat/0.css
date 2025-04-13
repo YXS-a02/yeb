@@ -1,0 +1,50 @@
+/* 设置整体页面风格 */
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: green; /* 浅蓝色背景 */
+    margin: 0;
+    padding: 0;
+}
+
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 占满整个视口高度 */
+}
+#chat-window {
+    flex-grow: 1; /* 让该部分自动扩展填充剩余空间 */
+    overflow-y: auto; /* 启用垂直方向上的溢出滚动 */
+    border-right: 1px solid #ddd; /* 右侧边框分隔线 */
+    padding: 1em;
+    background-color: white; /* 白色内部区域对比鲜明 */
+}
+#input-container {
+    position: fixed; /* 将其锁定至浏览器窗口底部 */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, .1); /* 上方轻微阴影增加层次感 */
+    background-color: white;
+    z-index: 10;
+}
+
+#message-input {
+    width: calc(100% - 90px);
+    padding: .5em;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+button[type='submit'] {
+    float: right;
+    padding: .6em 1em;
+    color: white;
+    background-color: #007bff; /* 主色调按钮 */
+    border: none;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+    &:hover { /* 鼠标悬停时改变外观 */
+        background-color: darken(#007bff, 10%);
+    }
+}
