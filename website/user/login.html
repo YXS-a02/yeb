@@ -46,18 +46,19 @@
         <div style="height: 25px;"></div>
         <div class="body">
             <div class="bleft">
-                <div><h3>登录</h3></div>
-                <div><a>用户</a><input id="name" value="150"></div>
-                <div><a>密码</a><input id="passwed" type="password"></div>
+                <h3>登录</h3>
+                用户<input id="uid" value="150" name="id"><br>
+                密码<input id="passwed" type="password" name="pwd"><br>
                 <div id="ing"></div>
-                <div><button onclick="dn()">登录</button><button onclick="esc()">退出</button></div>
+                <button onclick="dn()">登录</button><button onclick="esc()">退出</button>
             </div>
             <div class="bright">
                 <h3>选项板</h3>
                 <button onclick="ing()">ing</button><br>
                 <button onclick="help()">help</button><br>
                 <button onclick="tozuce()">3</button><br>
-                <button onclick="testout()">4</button>
+                <button onclick="testout()">4</button><br>
+                <button type="button" onclick="logintest()">5</button>
 
             </div>
         </div>
@@ -67,6 +68,7 @@
             <div><a></a></div>
         </div>
     </div>
+    <script src="./login.js"></script>
     <script src="./dn.js"></script>
     <script src="../sarah.js"></script>
     <script>
@@ -74,8 +76,6 @@
             var ing=document.getElementById('ing')
             ing.innerHTML='12345'
         }
-    </script>
-    <script>
         user()
         function user(){
             var userid=0

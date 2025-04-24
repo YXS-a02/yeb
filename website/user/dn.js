@@ -1,6 +1,6 @@
 function dn(){
             var passwed=document.getElementById("passwed").value
-            var user = document.getElementById("name").value
+            var user = document.getElementById("uid").value
             var ing=document.getElementById('ing')
             ing.innerHTML='logining'
             if(user==="150")
