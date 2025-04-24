@@ -34,7 +34,7 @@ function vuser($DB, $id, $password) {
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $result = $stmt->execute();
     // 如果结果集中有数据，则返回true；否则返回false
-    var_dump($result); // 正确应返回PDOStatement对象
+    //var_dump($result);  正确应返回PDOStatement对象
     if ($result) {
         return true;
     } else {
@@ -73,6 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }else{
             echo json_encode(['runrow' => 'no']); 
         };
+    };
+}else{
+    echo 'debug';
+    $event = $_GET['event'];
+    if ($event == '') {
+        echo 'plase enter by get';
     };
 };
 ?>
