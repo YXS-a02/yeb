@@ -7,19 +7,15 @@
     <link rel="shortcut icon " type="images/x-icon" href="./logo.ico">
 </head>
 <body>
-    <script src="./website/sarah.js"></script>
     <link rel="stylesheet" href="./0.css"></link><ul class="navbar">
         <li></li>
         <li><input id="sarah"><button onclick="sarah()">sarah</button></li>
         <li><div id="sud" style="display: flex;color: aliceblue;"></div></li>
     </ul>
     <script>
-        user()
-        function user(){
-            var userid=0
-            userid=localStorage.getItem('user',user)
-            var u=document.getElementById('sud')
-            u.innerHTML= userid
+        function showuser(){
+            var userid=localStorage.getItem('u_id');
+            document.getElementById('sud').innerHTML= userid;
         }
     </script>
     <div>
@@ -51,15 +47,10 @@
     <hr>
     <a href="./website/user/login.html">newdn</a>
     <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.0/libs/cn/index.js"></script>
+    <script src="./website/sarah.js"></script>
     <script>
-        new CozeWebSDK.WebChatClient({
-        config: {
-        bot_id: '7442987549683187724',
-        },
-        componentProps: {
-        title: 'Coze',
-        },
-        });
+        showuser();
+        new CozeWebSDK.WebChatClient({config: {bot_id: '7442987549683187724',},componentProps: {title: 'Coze',},});
     </script>
 </body>
 </html>

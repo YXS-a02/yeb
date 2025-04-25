@@ -1,4 +1,5 @@
 <?php
+$r_v = '1.0';
 $host = 'localhost';// 数据库主机地址
 $dbname = 'user';// 数据库名称
 $username = 'root';// 用户名
@@ -75,13 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         };
     };
 }else{
-    echo 'debug<br>';
+    echo 'debug<hr>';
     if ($_SERVER['REQUEST_METHOD'] === 'GET'){
         $event = $_GET['event'];
         if ($event == 'v') {
-            echo '1.0';
+            echo $r_v.'<br>';
         };
+        if ($event == 'help') {
+            echo 'newing...';
+        }
     };
-    echo 'plase enter by get<br>';
+    echo '<hr>plase enter by get<br>';
 };
 ?>

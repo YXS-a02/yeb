@@ -33,6 +33,8 @@
           history.go(-1);
           break;
         case 'no':
+          alert();
+        case 'no':
           ingd.innerHTML='no';
           alert('登录失败');
           break;
