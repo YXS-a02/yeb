@@ -75,10 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         };
     };
 }else{
-    echo 'debug';
-    $event = $_GET['event'];
-    if ($event == '') {
-        echo 'plase enter by get';
+    echo 'debug<br>';
+    if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+        $event = $_GET['event'];
+        if ($event == 'v') {
+            echo '1.0';
+        };
     };
+    echo 'plase enter by get<br>';
 };
 ?>
