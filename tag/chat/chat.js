@@ -65,4 +65,4 @@ function load_messages() {
     });
 }
 
-setInterval(load_messages, 2000); // 每隔两秒加载一次消息
+setInterval(load_messages, 2500); // 每隔两秒加载一次消息
