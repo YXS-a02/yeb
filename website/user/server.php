@@ -67,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $u_pwd = $_POST['pwd'];
         if (cidndb($db_user,$u_id)) {
             if (vuser($db_user,$u_id,$u_pwd)) {
-                echo json_encode(['runrow' => 'ok']);   
+                echo json_encode(['runrow' => 'yes']);   
             }else{
-                echo json_encode(['runrow' => 'no']); 
+                echo json_encode(['runrow' => 'pno']); 
             }      
         }else{
-            echo json_encode(['runrow' => 'no']); 
+            echo json_encode(['runrow' => 'uno']); 
         };
     };
 }else{
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         };
         if ($event == 'help') {
             echo 'newing...';
-        }
+        };
     };
     echo '<hr>plase enter by get<br>';
 };

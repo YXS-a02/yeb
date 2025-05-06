@@ -26,15 +26,15 @@
   
       // 标准化状态判断
       switch(data.runrow.toLowerCase()) {
-        case 'ok':
+        case 'yes':
           ingd.innerHTML='succful';
           localStorage.setItem('u_id','a')
           localStorage.setItem('user','a')
           history.go(-1);
           break;
-        case 'no':
-          alert();
-        case 'no':
+        case 'uno':
+          alert('uno');
+        case 'pno':
           ingd.innerHTML='no';
           alert('登录失败');
           break;

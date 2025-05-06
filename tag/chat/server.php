@@ -1,10 +1,7 @@
 <?php
-$host = 'localhost';       // 数据库主机地址
-$dbname = 'chat';     // 数据库名称
-$username = 'root';        // 用户名
-$password = '150abcd051';           // 密码
+$host = 'localhost';$dbname = 'chat';$db_username = 'root';$db_password = '150abcd051';           // 密码
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $db_username, $db_password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // 设置错误模式为异常处理
 } catch (PDOException $e) {
     die('Database connection failed: ' . $e->getMessage());
@@ -27,22 +24,20 @@ function saveMessage($pdo, $username, $message){
         return false;
     }
 }
-   
 // chat_send_ajax.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = htmlspecialchars(trim($_POST['username']));
-    $message = htmlspecialchars(trim($_POST['message']));
-
-    if (!empty($username) && !empty($message)) {
-        file_put_contents('chat.txt', date('Y-m-d H:i:s').' ['.$username.'] '.$message."\n", FILE_APPEND);
-        saveMessage($pdo,$username,$message);
-        echo json_encode(['status' => 'success']);
-    } else {
-        echo json_encode(['status' => 'error', 'msg' => '不能为空!']);
+    if ($_POST['e' == 'send']) {
+        $username = htmlspecialchars(trim($_POST['username']));
+        $message = htmlspecialchars(trim($_POST['message']));
+        if (!empty($username) && !empty($message)) {
+            file_put_contents('chat.txt', date('Y-m-d H:i:s').' ['.$username.'] '.$message."\n", FILE_APPEND);
+            saveMessage($pdo,$username,$message);
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'msg' => '不能为空!']);
+        }
     }
-} else {
-    echo json_encode(['status' => 'error', 'msg' => 'Invalid request method!']);
-}
+}  
 ?>
 
 
