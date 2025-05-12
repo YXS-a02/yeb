@@ -1,8 +1,4 @@
 function set_chat_msg() {
-<<<<<<< HEAD
-    const username = localStorage.getItem("u_id")
-    const message = document.getElementById('message').value;
-=======
     const username = localStorage.getItem("user");
     if (!username) {
         alert("Please set your username before sending a message.");
@@ -14,7 +10,6 @@ function set_chat_msg() {
         alert("Message cannot be empty.");
         return;
     }
->>>>>>> 3aa95b4833c9dbae462ae9ae122bce48237c1ef4
 
     fetch('server.php', {
         method: 'POST',
@@ -53,9 +48,6 @@ function load_messages() {
         return response.json();
     })
     .then(data => {
-<<<<<<< HEAD
-        document.getElementById('messages').innerHTML = data.replace(/\n/g, '<br>');
-=======
         if (data.status === 'success') {
             const messagesContainer = document.getElementById('messages');
             messagesContainer.innerHTML = ''; // 清空旧消息
@@ -70,7 +62,6 @@ function load_messages() {
     })
     .catch(error => {
         console.error('Error fetching messages:', error);
->>>>>>> 3aa95b4833c9dbae462ae9ae122bce48237c1ef4
     });
 }
 

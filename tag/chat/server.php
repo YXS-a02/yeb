@@ -1,12 +1,4 @@
 <?php
-<<<<<<< HEAD
-$host = 'localhost';$dbname = 'chat';$db_username = 'root';$db_password = '150abcd051';           // 密码
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $db_username, $db_password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // 设置错误模式为异常处理
-=======
-// filepath: /workspaces/yeb/tag/chat/server.php
-
 header('Content-Type: application/json');
 
 // 数据库连接
@@ -18,7 +10,6 @@ $password = '150abcd051';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
->>>>>>> 3aa95b4833c9dbae462ae9ae122bce48237c1ef4
 } catch (PDOException $e) {
     die(json_encode(['status' => 'error', 'msg' => 'Database connection failed: ' . $e->getMessage()]));
 }
@@ -34,10 +25,19 @@ function saveMessage($pdo, $username, $message) {
         return false;
     }
 }
-<<<<<<< HEAD
+// 获取消息从数据库
+function getMessages($pdo) {
+    try {
+        $stmt = $pdo->query("SELECT username, message, created_at FROM messages ORDER BY created_at DESC LIMIT 50");
+        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $messages;
+    } catch (Exception $ex) {
+        return [];
+    }
+}
 // chat_send_ajax.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($_POST['e' == 'send']) {
+    if ($_POST['action' == 'send']) {
         $username = htmlspecialchars(trim($_POST['username']));
         $message = htmlspecialchars(trim($_POST['message']));
         if (!empty($username) && !empty($message)) {
@@ -49,21 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }  
-?>
-=======
-
-// 获取消息从数据库
-function getMessages($pdo) {
-    try {
-        $stmt = $pdo->query("SELECT username, message, created_at FROM messages ORDER BY created_at DESC LIMIT 50");
-        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $messages;
-    } catch (Exception $ex) {
-        return [];
-    }
-}
->>>>>>> 3aa95b4833c9dbae462ae9ae122bce48237c1ef4
-
 // 处理请求
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? null;
