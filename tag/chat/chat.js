@@ -14,7 +14,7 @@ function set_chat_msg() {
     fetch('server.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `e=${encodeURIComponent('send')}&username=${encodeURIComponent(username)}&message=${encodeURIComponent(message)}`
+        body: `action=${encodeURIComponent('send')}&username=${encodeURIComponent(username)}&message=${encodeURIComponent(message)}`
     })
     .then(response => {
         if (!response.ok) {
@@ -65,4 +65,4 @@ function load_messages() {
     });
 }
 
-setInterval(load_messages, 2500); // 每隔两秒加载一次消息
+setInterval(load_messages, 4000); // 每隔两秒加载一次消息

@@ -1,11 +1,7 @@
 <?php
 header('Content-Type: application/json');
-
 // 数据库连接
-$host = 'localhost';
-$dbname = 'chat';
-$username = 'root';
-$password = '150abcd051';
+$host = 'localhost';$dbname = 'chat';$username = 'root';$password = '150abcd051';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -21,6 +17,7 @@ function saveMessage($pdo, $username, $message) {
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':message', $message);
         return $stmt->execute();
+        $pdo->commit();
     } catch (Exception $ex) {
         return false;
     }
@@ -28,7 +25,7 @@ function saveMessage($pdo, $username, $message) {
 // 获取消息从数据库
 function getMessages($pdo) {
     try {
-        $stmt = $pdo->query("SELECT username, message, created_at FROM messages ORDER BY created_at DESC LIMIT 50");
+        $stmt = $pdo->query("SELECT username, message, timestamp FROM messages");
         $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $messages;
     } catch (Exception $ex) {
@@ -37,13 +34,14 @@ function getMessages($pdo) {
 }
 // chat_send_ajax.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($_POST['action' == 'send']) {
+    if ((isset($_POST['action']) && $_POST['action'] == 'send')) {
         $username = htmlspecialchars(trim($_POST['username']));
         $message = htmlspecialchars(trim($_POST['message']));
         if (!empty($username) && !empty($message)) {
-            file_put_contents('chat.txt', date('Y-m-d H:i:s').' ['.$username.'] '.$message."\n", FILE_APPEND);
+            //file_put_contents('chat.txt', date('Y-m-d H:i:s').' ['.$username.'] '.$message."\n", FILE_APPEND);
             saveMessage($pdo,$username,$message);
             echo json_encode(['status' => 'success']);
+            exit;
         } else {
             echo json_encode(['status' => 'error', 'msg' => '不能为空!']);
         }
@@ -74,12 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($messages)) {
             echo json_encode(['status' => 'success', 'messages' => $messages]);
         } else {
-            echo json_encode(['status' => 'success', 'messages' => []]);
+            echo json_encode(['status' => 'success', 'messages' => ['none']]);
         }
         exit;
     }
 }
 
-echo json_encode(['status' => 'error', 'msg' => 'Invalid request']);
+echo json_encode(['status' => 'error', 'msg' => 'what?']);
 exit;
 ?>
