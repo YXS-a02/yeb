@@ -28,12 +28,14 @@
       switch(data.runrow.toLowerCase()) {
         case 'yes':
           ingd.innerHTML='succful';
-          localStorage.setItem('u_id','a')
-          localStorage.setItem('user','a')
+          localStorage.setItem('u_id',data.username);
+          localStorage.setItem('user',data.username);
+          alert('ok')
           history.go(-1);
           break;
         case 'uno':
           alert('uno');
+          break;
         case 'pno':
           ingd.innerHTML='no';
           alert('登录失败');

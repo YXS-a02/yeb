@@ -1,91 +1,75 @@
 <?php
 $r_v = '1.0';
-$host = 'localhost';// 数据库主机地址
-$dbname = 'user';// 数据库名称
-$username = 'root';// 用户名
-$password = '150abcd051';// 密码
+$host = 'localhost';
+$dbname = 'user';
+$username = 'root';
+$password = '150abcd051';
 try {
     $db_user = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $db_user->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // 设置错误模式为异常处理
+    $db_user->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die('Database connection failed: ' . $e->getMessage());
 }
-?>
-<?php
-function cidndb($db, $id) {
+
+function checkUserIdExists($db, $id) {
     try {
-        // 查询语句
         $stmt = $db->prepare("SELECT id FROM main WHERE id = :id LIMIT 1");
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-
-        // 如果查询结果有记录，则返回 true，否则返回 false
-        if ($stmt->fetch(PDO::FETCH_ASSOC)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
     } catch (PDOException $e) {
-        // 捕获并处理数据库错误
-        return false;
-    }
-};
-function vuser($DB, $id, $password) {
-    $stmt = $DB->prepare("SELECT * FROM main WHERE id = :id");
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    $result = $stmt->execute();
-    // 如果结果集中有数据，则返回true；否则返回false
-    //var_dump($result);  正确应返回PDOStatement对象
-    if ($result) {
-        return true;
-    } else {
-        return false;
-    }
-};
-function saveMessage($pdo, $username, $message){
-    try{
-        $stmt = $pdo->prepare("INSERT INTO messages(username, message) VALUES(:username, :message)");
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':message', $message);
-
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }catch(Exception $ex){
-        echo "Error saving the message to database.";
+        error_log("Database error in checkUserIdExists: " . $e->getMessage());
         return false;
     }
 }
-   
-// chat_send_ajax.php
+
+function validateUserCredentials($DB, $id, $password) {
+    try {
+        $stmt = $DB->prepare("SELECT id, name FROM main WHERE id = :id AND password = :password LIMIT 1");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':password', $password, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database error in validateUserCredentials: " . $e->getMessage());
+        return false;
+    }
+}
+
+// 处理请求
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $event = htmlspecialchars(trim($_POST['event']));
+    header('Content-Type: application/json');
+    $event = isset($_POST['event']) ? trim($_POST['event']) : '';
     if ($event === 'login') {
-        $u_id = $_POST['id'];
-        $u_pwd = $_POST['pwd'];
-        if (cidndb($db_user,$u_id)) {
-            if (vuser($db_user,$u_id,$u_pwd)) {
-                echo json_encode(['runrow' => 'yes']);   
-            }else{
-                echo json_encode(['runrow' => 'pno']); 
-            }      
-        }else{
-            echo json_encode(['runrow' => 'uno']); 
-        };
-    };
-}else{
+        $u_id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+        $u_pwd = isset($_POST['pwd']) ? trim($_POST['pwd']) : '';
+        
+        if ($u_id === false || $u_pwd === '') {
+            echo json_encode(['runrow' => 'pno']);
+            exit;
+        }
+
+        $user = validateUserCredentials($db_user, $u_id, $u_pwd);
+        if ($user !== false) {
+            echo json_encode([
+                'runrow' => 'yes',
+                'username' => $user['name']
+            ]);
+        } else {
+            echo json_encode(['runrow' => 'pno']);
+        }
+    }
+} else {
+    header('Content-Type: text/html');
     echo 'debug<hr>';
-    if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-        $event = $_GET['event'];
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        $event = isset($_GET['event']) ? $_GET['event'] : '';
         if ($event == 'v') {
-            echo $r_v.'<br>';
-        };
-        if ($event == 'help') {
+            echo $r_v . '<br>';
+        } elseif ($event == 'help') {
             echo 'newing...';
-        };
-    };
-    echo '<hr>plase enter by get<br>';
-};
+        }
+    }
+    echo '<hr>Please enter by POST<br>';
+}
 ?>
