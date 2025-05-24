@@ -53,7 +53,7 @@ function load_messages() {
             messagesContainer.innerHTML = ''; // 清空旧消息
             data.messages.forEach(msg => {
                 const messageElement = document.createElement('div');
-                messageElement.innerHTML = `<strong>${msg.username}</strong>: ${msg.message}`;
+                messageElement.innerHTML = `<strong>[${msg.timestamp}]${msg.username}</strong>: ${msg.message}`;
                 messagesContainer.appendChild(messageElement);
             });
         } else {
