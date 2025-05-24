@@ -1,9 +1,13 @@
 <?php
-// 设置变量
+// 设置基础目录
+$base_dir = 'user_dirs'; // 所有用户目录的父目录
+$dir = isset($_GET['dir']) ? trim($_GET['dir']) : 'default';
 $file = isset($_GET['file']) ? $_GET['file'] : '';
 $content = '';
 $message = '';
-$directory = 'files'; // 存储文件的目录
+
+// 过滤目录名称（只允许字母、数字、下划线和连字符）
+$directory = preg_replace('/[^a-zA-Z0-9_-]/', '', $dir);
 
 // 确保目录存在
 if (!file_exists($directory)) {
@@ -106,6 +110,12 @@ if ($handle = opendir($directory)) {
             background-color: #d0e0ff;
             font-weight: bold;
         }
+        .directory-selector {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -115,18 +125,27 @@ if ($handle = opendir($directory)) {
         <div class="message"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
     
+    <div class="directory-selector">
+        <form method="get">
+            <label>当前目录：
+                <input type="text" name="dir" value="<?php echo htmlspecialchars($dir); ?>">
+            </label>
+            <button type="submit">切换</button>
+        </form>
+    </div>
+    
     <div class="container">
         <div class="file-list">
             <h3>文件列表</h3>
             <?php foreach ($files as $f): ?>
                 <div class="file-item <?php echo ($f === $file) ? 'active' : ''; ?>">
-                    <a href="?file=<?php echo urlencode($f); ?>"><?php echo htmlspecialchars($f); ?></a>
+                    <a href="?file=<?php echo urlencode($f); ?>&dir=<?php echo urlencode($dir); ?>"><?php echo htmlspecialchars($f); ?></a>
                 </div>
             <?php endforeach; ?>
         </div>
         
         <div class="editor">
-            <form method="post">
+            <form method="post" action="?dir=<?php echo urlencode($dir); ?>">
                 <div>
                     <label for="filename">文件名:</label>
                     <input type="text" id="filename" name="filename" value="<?php echo htmlspecialchars($file); ?>" required>
@@ -136,7 +155,6 @@ if ($handle = opendir($directory)) {
                 </div>
                 <div>
                     <button type="submit" name="save">保存</button>
-<button>退出</button>
                 </div>
             </form>
         </div>

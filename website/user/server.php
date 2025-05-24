@@ -48,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['runrow' => 'pno']);
             exit;
         }
-
         $user = validateUserCredentials($db_user, $u_id, $u_pwd);
         if ($user !== false) {
             echo json_encode([
@@ -58,6 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo json_encode(['runrow' => 'pno']);
         }
+    }
+    if ($event === 'singup') {
+        //a
     }
 } else {
     header('Content-Type: text/html');

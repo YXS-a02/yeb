@@ -1,5 +1,5 @@
   var ingd=document.getElementById('ing');
-  async function logintest() {
+  async function login() {
     console.log('loading...');
     const id = document.getElementById("uid").value;
     const passwed = document.getElementById("passwed").value;
