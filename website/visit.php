@@ -51,6 +51,7 @@
 <?php
 // 初始化变量
 $rows = [];
+$userInfo = [];
 $error = null;
 
 // 验证并获取uid参数
@@ -70,16 +71,19 @@ if ($uid) {
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         
-        // SQL查询语句
+        // 查询information表
         $sql = "SELECT note, email FROM information WHERE id = :id LIMIT 1";
-        
-        // 准备语句并执行查询
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $uid, PDO::PARAM_STR);
         $stmt->execute();
-        
-        // 获取结果
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // 查询main表获取用户名
+        $sql2 = "SELECT name FROM main WHERE id = :id LIMIT 1";
+        $stmt2 = $conn->prepare($sql2);
+        $stmt2->bindParam(':id', $uid, PDO::PARAM_STR);
+        $stmt2->execute();
+        $userInfo = $stmt2->fetchAll(PDO::FETCH_ASSOC);
         
     } catch(PDOException $e) {
         error_log("[" . date('Y-m-d H:i:s') . "] 数据库错误: " . $e->getMessage() . "\n", 3, "error.log");
@@ -108,7 +112,7 @@ if ($uid) {
             <img src="../../file/src/bp.gif" width="100px" height="100px" alt="用户头像" loading="lazy">
         </div>
         <div>
-            <h1 style="font-size: 50px; margin: 0;">用户名</h1>
+            <h1 style="font-size: 50px; margin: 0;"><?php echo isset($userInfo[0]['name']) ? htmlspecialchars($userInfo[0]['name']) : '未命名用户'; ?></h1>
             <p style="font-size: 25px; margin: 5px 0 0;">ID: <?php echo htmlspecialchars($uid ?? '未知'); ?></p>
         </div>
     </div>
