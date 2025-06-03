@@ -5,16 +5,14 @@
     <meta charset="UTF-8" />
     <title>YEB</title>
     <link rel="shortcut icon " type="images/x-icon" href="./logo.ico">
+    <script src="./website/website.js"></script>
 </head>
 <body>
     <link rel="stylesheet" href="./0.css"></link><ul class="navbar">
         <li></li>
         <li><input id="sarah"><button onclick="sarah()">sarah</button></li>
-        <li><div id="sud" style="display: flex;color: aliceblue;"></div></li>
+        <li><div id="sud" style="display: flex;color: aliceblue;" onclick="location.href='./website/user/login.html';"></div></li>
     </ul>
-    <script>
-        function showuser(){var userid=localStorage.getItem('u_id');document.getElementById('sud').innerHTML= userid;}
-    </script>
     <div>
         <h1>YEB</h1>
         <a>v2.0</a>
@@ -43,7 +41,7 @@
         <li><a href="./website/user/visit.php"></a></li>
     </ul>
     <hr>
-    <a href="./website/user/login.html">newdn</a>
+    <!--a href="./website/user/login.html">newdn</a-->
     <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.0/libs/cn/index.js"></script>
     <script src="./website/sarah.js"></script>
     <script>

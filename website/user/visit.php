@@ -54,8 +54,15 @@ $rows = [];
 $userInfo = [];
 $error = null;
 
+function sbc($cookie_name){
+    if(!isset($_COOKIE[$cookie_name])) {
+        return null;
+    } else {
+        return $_COOKIE[$cookie_name];
+    };
+};
 // 验证并获取uid参数
-$uid = isset($_GET['uid']) ? trim($_GET['uid']) : null;
+$uid = isset($_GET['uid']) ? trim($_GET['uid']) : sbc('u_id');
 
 if ($uid) {
     // 数据库连接配置（建议从配置文件中引入）
@@ -72,7 +79,7 @@ if ($uid) {
         $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         
         // 查询information表
-        $sql = "SELECT note, email FROM information WHERE id = :id LIMIT 1";
+        $sql = "SELECT hdimg, note, email FROM information WHERE id = :id LIMIT 1";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $uid, PDO::PARAM_STR);
         $stmt->execute();
@@ -109,7 +116,7 @@ if ($uid) {
     
     <div class="profile-header">
         <div class="profile-pic">
-            <img src="../../file/src/bp.gif" width="100px" height="100px" alt="用户头像" loading="lazy">
+            <img src="../../file/src/<?php echo isset($rows[0]['hdimg']) ? htmlspecialchars($rows[0]['hdimg']) : 'bp.gif'; ?>" width="100px" height="100px" alt="用户头像" loading="lazy">
         </div>
         <div>
             <h1 style="font-size: 50px; margin: 0;"><?php echo isset($userInfo[0]['name']) ? htmlspecialchars($userInfo[0]['name']) : '未命名用户'; ?></h1>
@@ -140,11 +147,11 @@ if ($uid) {
         </div>
     </div>
     
-    <script src="./sarah.js"></script>
+    <script src="./website.js"></script>
     <script>
         // 从本地存储获取用户名并显示
         document.addEventListener('DOMContentLoaded', function() {
-            const user = localStorage.getItem('user');
+            const user = yookie.get('u_name');
             if (user) {
                 document.getElementById('sud').textContent = user;
             }

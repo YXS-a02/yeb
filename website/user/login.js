@@ -30,15 +30,15 @@
           ingd.innerHTML='succful';
           localStorage.setItem('u_id',data.username);
           localStorage.setItem('user',data.username);
-          alert('ok')
+          yookie.set('u_name',data.username,31536e3,'/');
+          yookie.set('u_id',id,31536e3,'/');
           history.go(-1);
           break;
         case 'uno':
           alert('uno');
           break;
         case 'pno':
-          ingd.innerHTML='no';
-          alert('登录失败');
+          ingd.innerHTML='错误！';
           break;
         default:
           alert('未知响应状态');
