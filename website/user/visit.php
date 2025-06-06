@@ -93,7 +93,7 @@ if ($uid) {
         $userInfo = $stmt2->fetchAll(PDO::FETCH_ASSOC);
         
     } catch(PDOException $e) {
-        error_log("[" . date('Y-m-d H:i:s') . "] 数据库错误: " . $e->getMessage() . "\n", 3, "error.log");
+        error_log("[visit:" . date('Y-m-d H:i:s') . "] 数据库错误: " . $e->getMessage() . "\n", 3, "error.log");
         $error = "系统暂时不可用，请稍后再试";
     } finally {
         // 确保连接关闭
