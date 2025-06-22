@@ -1,0 +1,4 @@
+[2025-05-29 04:24:46] 数据库错误: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'note' in 'field list'
+[2025-05-29 04:27:04] 数据库错误: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'note' in 'field list'
+[2025-05-29 04:27:07] 数据库错误: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'note' in 'field list'
+[2025-05-29 04:27:08] 数据库错误: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'note' in 'field list'
