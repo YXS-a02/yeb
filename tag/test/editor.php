@@ -1,7 +1,7 @@
 <?php
 // 设置基础目录
 $base_dir = 'user_dirs'; // 所有用户目录的父目录
-$dir = isset($_GET['dir']) ? trim($_GET['dir']) : 'default';
+$dir = isset($_GET['dir']) ? trim($_GET['dir']) : 'PHP';
 $file = isset($_GET['file']) ? $_GET['file'] : '';
 $content = '';
 $message = '';
