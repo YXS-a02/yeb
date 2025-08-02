@@ -1,10 +1,25 @@
 
 function showuser(){
-  var showuserid=yookie.get('u_name');
-  if (showuserid == null) {
-    showuserid = '未登录';
-  }else;
-  document.getElementById('sud').innerHTML= showuserid;
+  // 获取cookie中的用户名
+  var username = yookie.get('u_name');
+  var showuserid = username ? username : '未登录';
+  
+  // 获取元素
+  var sudElement = document.getElementById('sud');
+  if (!sudElement) return; // 防止元素不存在的错误
+  
+  // 设置显示内容
+  sudElement.innerHTML = showuserid;
+  
+  // 如果已登录，添加点击事件
+  if (username) {
+    sudElement.onclick = function() {
+      // 跳转到用户页面
+      window.location.href = "./user/visit.php";
+    };
+    // 可以添加样式提示这是可点击的
+    sudElement.style.cursor = "pointer";
+  }
 };
 
 function getc(name){
