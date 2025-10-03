@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* 防止滚动条问题 */
+        }
+        .chat-container {
+            display: flex;
+            height: 100vh;
+        }
+        .input-panel {
+            width: 25%;
+            background-color: aqua;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .message-panel {
+            width: 75%;
+            background-color: aquamarine;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto; /* 允许消息区域滚动 */
+        }
+        #message {
+            width: 100%;
+            box-sizing: border-box; /* 包含padding和border */
+            margin-bottom: 10px;
+            resize: none; /* 禁止调整大小 */
+            min-height: 100px;
+        }
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="input-panel">
+            <label for="message">Message</label>
+            <textarea id="message" placeholder="Type your message..."></textarea>
+            <button onclick="set_chat_msg()">Send</button>
+            <button onclick="history.go(-1)">退出</button>
+        </div>
+        <div id="messages" class="message-panel"></div>
+    </div>
+    <script src="./chat.js"></script>
+</body>
+</html>

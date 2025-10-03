@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>贪吃蛇小游戏</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+    .controls {
+      text-align: center;
+      margin: 10px 0;
+    }
+    button {
+      padding: 8px 16px;
+      margin: 0 5px;
+      font-size: 16px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #score-display {
+      text-align: center;
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    #game-over {
+      text-align: center;
+      font-size: 24px;
+      color: red;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>贪吃蛇小游戏</h1>
+  <div id="score-display">得分: <span id="score">0</span></div>
+  <div id="game-over">游戏结束!</div>
+  <canvas id="game-canvas" width="600" height="400"></canvas>
+  <div class="controls">
+    <button onclick="changeDirection('up')">上</button><br>
+    <button onclick="changeDirection('left')">左</button>
+    <button onclick="changeDirection('down')">下</button>
+    <button onclick="changeDirection('right')">右</button>
+    <button onclick="restartGame()">重新开始</button>
+  </div>
+
+  <script>
+    // 获取画布元素
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    const scoreElement = document.getElementById('score');
+    const gameOverElement = document.getElementById('game-over');
+
+    // 游戏区域的宽度和高度
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    // 蛇身每个部分的大小
+    const dotSize = 20;
+
+    // 蛇的移动速度
+    let snakeSpeed = 250;
+
+    // 初始蛇的长度
+    const initialSnakeLength = 3;
+
+    // 蛇的移动方向
+    let direction = 'right';
+    let nextDirection = 'right';
+
+    // 蛇的身体部分
+    let snake = [];
+
+    // 食物的位置
+    let foodPosition = {};
+
+    // 游戏是否结束的标志
+    let gameOver = false;
+
+    // 游戏得分
+    let score = 0;
+
+    // 游戏循环的ID
+    let gameLoopId;
+
+    // 初始化游戏
+    function initGame() {
+      // 重置游戏状态
+      snake = [];
+      direction = 'right';
+      nextDirection = 'right';
+      gameOver = false;
+      score = 0;
+      scoreElement.textContent = score;
+      gameOverElement.style.display = 'none';
+      
+      // 创建蛇的初始位置
+      for (let i = 0; i < initialSnakeLength; i++) {
+        snake.push({ x: (initialSnakeLength - 1 - i) * dotSize, y: 0 });
+      }
+
+      // 创建食物的位置
+      generateFood();
+
+      // 开始游戏循环
+      gameLoopId = setTimeout(gameLoop, snakeSpeed);
+    }
+
+    // 创建食物的位置
+    function generateFood() {
+      const maxX = Math.floor(canvasWidth / dotSize) - 1;
+      const maxY = Math.floor(canvasHeight / dotSize) - 1;
+
+      foodPosition = {
+        x: Math.floor(Math.random() * maxX) * dotSize,
+        y: Math.floor(Math.random() * maxY) * dotSize
+      };
+
+      // 检查食物是否出现在蛇的身体上，如果是，重新生成
+      for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === foodPosition.x && snake[i].y === foodPosition.y) {
+          generateFood();
+          break;
+        }
+      }
+    }
+
+    // 游戏循环
+    function gameLoop() {
+      if (gameOver) {
+        return;
+      }
+
+      moveSnake();
+      if (!gameOver) {
+        gameLoopId = setTimeout(gameLoop, snakeSpeed);
+      }
+    }
+
+    // 移动蛇
+    function moveSnake() {
+      // 更新方向
+      direction = nextDirection;
+      
+      // 获取蛇头的位置
+      const head = { x: snake[0].x, y: snake[0].y };
+
+      // 根据方向更新蛇头的位置
+      switch (direction) {
+        case 'up':
+          head.y -= dotSize;
+          break;
+        case 'down':
+          head.y += dotSize;
+          break;
+        case 'left':
+          head.x -= dotSize;
+          break;
+        case 'right':
+          head.x += dotSize;
+          break;
+      }
+
+      // 检查蛇头是否撞墙或撞到自己的身体
+      if (
+        head.x < 0 ||
+        head.y < 0 ||
+        head.x >= canvasWidth ||
+        head.y >= canvasHeight ||
+        checkCollision(head)
+      ) {
+        endGame();
+        return;
+      }
+
+      // 将新的蛇头加入到蛇身体的第一个位置
+      snake.unshift(head);
+
+      // 检查蛇是否吃到食物
+      if (head.x === foodPosition.x && head.y === foodPosition.y) {
+        // 增加分数
+        score += 10;
+        scoreElement.textContent = score;
+        
+        // 稍微加快游戏速度
+        if (snakeSpeed > 50) {
+          snakeSpeed -= 2;
+        }
+        
+        // 生成新的食物
+        generateFood();
+      } else {
+        // 如果蛇没有吃到食物，移除蛇尾
+        snake.pop();
+      }
+
+      // 更新游戏画面
+      renderGame();
+    }
+
+    // 结束游戏
+    function endGame() {
+      localStorage.setItem('tcs_lastscore',score);
+      gameOver = true;
+      clearTimeout(gameLoopId);
+      gameOverElement.style.display = 'block';
+    }
+
+    // 重新开始游戏
+    function restartGame() {
+      clearTimeout(gameLoopId);
+      initGame();
+    }
+
+    // 改变方向
+    function changeDirection(newDirection) {
+      // 防止180度转弯
+      if (
+        (direction === 'up' && newDirection !== 'down') ||
+        (direction === 'down' && newDirection !== 'up') ||
+        (direction === 'left' && newDirection !== 'right') ||
+        (direction === 'right' && newDirection !== 'left')
+      ) {
+        nextDirection = newDirection;
+      }
+    }
+
+    // 检查蛇头是否和身体的其他部分重叠
+    function checkCollision(head) {
+      for (let i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // 更新游戏画面
+    function renderGame() {
+      // 清空画布
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      // 绘制蛇身
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? '#4CAF50' : '#8BC34A'; // 蛇头和蛇身不同颜色
+        ctx.fillRect(snake[i].x, snake[i].y, dotSize, dotSize);
+        ctx.strokeStyle = '#000';
+        ctx.strokeRect(snake[i].x, snake[i].y, dotSize, dotSize);
+      }
+
+      // 绘制食物
+      ctx.fillStyle = '#F44336';
+      ctx.beginPath();
+      ctx.arc(
+        foodPosition.x + dotSize/2, 
+        foodPosition.y + dotSize/2, 
+        dotSize/2, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    // 监听键盘按键事件
+    document.addEventListener('keydown', function(event) {
+      switch (event.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          changeDirection('up');
+          break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          changeDirection('down');
+          break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          changeDirection('left');
+          break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          changeDirection('right');
+          break;
+        case ' ':
+          if (gameOver) {
+            restartGame();
+          }
+          break;
+      }
+    });
+
+    // 初始化游戏
+    initGame();
+  </script>
+</body>
+</html>
