@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>newdn</title>
+    <style>
+        .body{
+            color: #000;
+        }
+        .bleft{
+            float: left;
+            background-color: aqua;
+            width: 70%;
+            height: 200px;
+            text-align: center;
+        }
+        .bright{
+            height: 1;
+            background-color: blue;
+            height: 200px;
+            text-align: center;
+        }
+        .di{
+            background-color: blueviolet;
+            height: 40px;
+            text-align: center;
+        }
+        .top{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            height: 23px;z
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="top">
+            <a href="../../index.html" style="color: aliceblue;text-decoration: none;">YEB</a>
+            <input id="sarah">
+            <button onclick="sarah()">sarah</button>
+            <div id="sud" style="display: flex;color: white;width: 40px;" onclick="window.open('../')"></div>
+        </div>
+        <div style="height: 25px;"></div>
+        <div class="body">
+            <div class="bleft">
+                <h3>注册</h3>
+                用户<input id="uid" name="id"><br>
+                密码<input id="passwed" type="password" name="pwd"><br>
+                <div id="ing"></div>
+                <button onclick="login()">注册</button><button onclick="history.go(-1);">退出</button>
+            </div>
+            <div class="bright">
+                <h3>选项板</h3>
+                <button onclick="ing()">ing</button><br>
+                <button onclick="help()">help</button><br>
+                <button onclick="location.href='./singup.html';">注册</button><br>
+                <button onclick="testout()">4</button><br>
+                <button onclick="yookie.set('uid','hi',null)">a</button>
+
+            </div>
+        </div>
+        <hr>
+        <div class="di">
+            <div>3Y出品</div>
+            <div><a></a></div>
+        </div>
+    </div>
+    <script src="./singup.js"></script>
+    <!--script src="./dn.js"--><!--/script-->
+    <script src="../sarah.js"></script>
+    <script src="../website.js"></script>
+    <script>
+        function ing(){
+            var ing=document.getElementById('ing')
+            ing.innerHTML='12345'
+        }
+        user()
+        function user(){
+            var userid=0
+            userid=localStorage.getItem('user',user)
+            var u=document.getElementById('sud')
+            u.innerHTML= userid
+        }
+    </script>
+</body>
+</html>

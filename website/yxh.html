@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>title</title>
+    <style>
+         .top{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            height: 23px;
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <a href="../home.html" style="color: aliceblue;text-decoration: none;">YEB</a>
+        <input id="sarah">
+        <button onclick="sarah()">sarah</button>
+        <div id="sud" style="color: aliceblue;"></div>
+    </div>
+    <div></div>
+    <div style="text-align: center;">
+        <div><a>韦定起</a><a>杨秀豪</a><a> 岑德胜</a></div>
+        <div><a>罗杨恩举</a><a>姚睿洋</a><a>蒙罗</a><a></a><a></a></div>
+        <div><a></a><a></a><a></a><a></a><a></a></div>
+        <div><a></a><a></a><a></a><a></a><a></a></div>
+        <div><a></a><a></a><a></a><a></a><a></a></div>
+        <div><a href="http://douyin.com">a</a></div>
+        <hr>
+    </div>
+    <script src="./sarah.js"></script>
+    <script>
+        user()
+        function user(){
+            var user=0
+            user=localStorage.getItem('user',user)
+            var u=document.getElementById('sud')
+            u.innerHTML= user
+        }
+    </script>
+</body>
+</html>
