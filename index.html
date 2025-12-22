@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta name="viewport"/>
+    <meta charset="UTF-8" />
+    <title>YEB</title>
+    <link rel="shortcut icon " type="images/x-icon" href="./logo.ico">
+    <script src="./website/website.js"></script>
+    <style>
+        ul.navbar {list-style-type: none;margin: 0;padding: 0;overflow: hidden;background-color: #333;}
+        ul.navbar li {float: left;}
+        ul.navbar li a {display: block;color: white;text-align: center;padding: 14px 16px;text-decoration: none;}
+        ul.navbar li a:hover {background-color: #111;}
+        div.sarah {text-align: center;}
+    </style>
+</head>
+<body>
+    <ul class="navbar">
+        <li></li>
+        <li><input id="sarah"><button onclick="sarah()">sarah</button></li>
+        <li><div id="sud" style="display: flex;color: aliceblue;" onclick="location.href='./website/user/login.html';"></div></li>
+    </ul>
+    <div>
+        <h1>YEB</h1>
+        <a>v2.0</a>
+    </div>
+    <hr>
+    <h2>Tool Box</h2>
+    <ul class="navbar">
+        <li><a href="./tag/jsqt/">计算器</a></li>
+        <li><a href="./file/dn.html">共享文件</a></li>
+        <li><a href="./tag/addb/">DB</a></li>
+        <li><a href="./tag/chat/index.html">chat</a></li>
+    </ul>
+    <h2>Game Box</h2>
+    <ul class="navbar">
+        <li><a href="./tag/tcsa/">贪吃蛇</a></li>
+        <li><a href="./tag/5zqa/">5子棋</a></li>
+        <li><a href="./tag/2048/">2048</a></li>
+        <li><a href="./tag/g4aa/">G4</a></li>
+        <li><a href="./tag/cnxq/">象棋</a></li>
+    </ul>
+    <h2>Other</h2>
+    <ul class="navbar">
+        <li><a href="./website/about.html">关于</a></li>
+        <li><a href="./website/newing.html"></a></li>
+        <li><a href="./tag/test/">试验场</a></li>
+        <li><a href="./website/user/visit.php"></a></li>
+    </ul>
+    <hr>
+    <!--a href="./website/user/login.html">newdn</a-->
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.1.0-beta.0/libs/cn/index.js"></script>
+    <script src="./website/sarah.js"></script>
+    <script>
+        showuser();
+        new CozeWebSDK.WebChatClient({config: {bot_id: '7442987549683187724',},componentProps: {title: 'Coze',},});
+    </script>
+</body>
+</html>
