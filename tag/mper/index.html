@@ -3,314 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>多媒体播放器</title>
-    <style>
-        :root {
-            --primary-color: #00ff9d;
-            --background-dark: #1a1a1a;
-            --background-medium: #252525;
-            --background-light: #333;
-            --text-color: #fff;
-            --text-secondary: #ccc;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            background: var(--background-dark);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .container {
-            display: flex;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .player-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .sidebar {
-            width: 350px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        
-        .player-container {
-            position: relative;
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            min-height: 400px;
-        }
-        
-        #mediaElement {
-            width: 100%;
-            border-radius: 10px 10px 0 0;
-            background: #000;
-            max-height: 480px;
-            display: block;
-            z-index: 2;
-            position: relative;
-        }
-        
-        .cover-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            z-index: 1;
-            transition: opacity 0.3s;
-            border-radius: 10px 10px 0 0;
-        }
-        
-        .cover-layer.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .cover-layer img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        
-        .cover-placeholder {
-            font-size: 5rem;
-            color: #444;
-        }
-        
-        .controls {
-            padding: 15px;
-            background: var(--background-medium);
-            border-radius: 0 0 10px 10px;
-            z-index: 3;
-            position: relative;
-        }
-        
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: #555;
-            margin: 10px 0;
-            cursor: pointer;
-            border-radius: 3px;
-            position: relative;
-        }
-        
-        #progressBar {
-            height: 100%;
-            background: var(--primary-color);
-            width: 0%;
-            border-radius: 3px;
-            transition: width 0.2s ease;
-        }
-        
-        .button-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-icon {
-            font-size: 1.2rem;
-            width: 24px;
-            height: 24px;
-        }
-        
-        input[type="range"] {
-            width: 100px;
-            height: 4px;
-            accent-color: var(--primary-color);
-        }
-        
-        .time-display {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            margin: 0 10px;
-        }
-        
-        .media-info {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            padding: 15px;
-            background: var(--background-medium);
-            border-radius: 10px;
-        }
-        
-        .info-text {
-            flex: 1;
-        }
-        
-        .info-text h3 {
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .info-text p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
-        .id3-info {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .id3-info div {
-            margin-bottom: 3px;
-        }
-        
-        .api-management {
-            margin-bottom: 15px;
-        }
-        
-        .api-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        select {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 5px;
-            background: var(--background-medium);
-            color: var(--text-color);
-            border: 1px solid #444;
-        }
-        
-        .api-form {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 10px;
-        }
-        
-        input[type="text"] {
-            padding: 8px 12px;
-            border-radius: 5px;
-            background: var(--background-medium);
-            color: var(--text-color);
-            border: 1px solid #444;
-        }
-        
-        .btn-primary {
-            background: var(--primary-color);
-            color: #000;
-            border-radius: 5px;
-            padding: 8px 15px;
-            font-weight: bold;
-        }
-        
-        .btn-primary:hover {
-            background: #00e58c;
-        }
-        
-        .file-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .file-list h3 {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .file-item {
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.2s;
-        }
-        
-        .file-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .file-item.active {
-            background: var(--primary-color);
-            color: #000;
-        }
-        
-        .file-icon {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
-        
-        .file-name {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-secondary);
-        }
-        
-        .error-message {
-            color: #ff6b6b;
-            padding: 10px;
-            background: rgba(255, 107, 107, 0.1);
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        
-        /* 隐藏默认控件 */
-        video::-webkit-media-controls {
-            display: none !important;
-        }
-    </style>
+    <link rel="stylesheet" href="./0.css">
 </head>
 <body>
     <div class="container">
@@ -366,11 +59,12 @@
                     <select id="apiSelector">
                         <option value="./api.php">默认 API (api.php)</option>
                     </select>
-                    <button id="refreshApiBtn" title="刷新API" class="btn-primary">↻</button>
                 </div>
                 <div class="api-form">
-                    <input type="text" id="newApiInput" placeholder="输入API URL">
-                    <button id="addApiBtn" class="btn-primary">添加</button>
+                    <button id="refreshApiBtn" title="刷新API" class="btn-primary">↻</button>
+                    <button id="deleteApiBtn" title="删除API" class="btn-primary">x</button>
+                    <button id="addApiBtn" title="添加API" class="btn-primary">+</button>
+                    <button id="ApiBtn-Other" title="Other" class="btn-primary">...</button>
                 </div>
                 <div id="apiError" class="error-message" style="display: none;"></div>
             </div>
@@ -387,14 +81,29 @@
         </div>
     </div>
 
+    <!-- 模态框背景遮罩 -->
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+
+    <!-- 添加API模态框 -->
+    <div class="modal-box" id="apiModal">
+        <div class="modal-box-top">
+            <div class="modal-box-title">添加API</div>
+            <button class="modal-close" id="modalCloseBtn">×</button>
+        </div>
+        <div class="modal-box-content">
+            <input type="text" id="newApiInput" placeholder="输入API URL" style="flex:1;">
+            <button id="modalAddBtn" class="btn-primary">添加</button>
+        </div>
+    </div>
+    
+    <script src="./api.js"></script>
+    <script src="./storage.js"></script>
     <script>
         // 全局变量
-        let db = null;
         let currentApi = './api.php';
         let currentMediaInfo = null;
         let isCoverVisible = true;
-        let isDbReady = false;
-        
+
         // DOM元素
         const mediaElement = document.getElementById('mediaElement');
         const playPauseBtn = document.getElementById('playPauseBtn');
@@ -408,8 +117,10 @@
         const fileItemsContainer = document.getElementById('fileItems');
         const apiSelector = document.getElementById('apiSelector');
         const refreshApiBtn = document.getElementById('refreshApiBtn');
+        const deleteApiBtn = document.getElementById('deleteApiBtn');
         const newApiInput = document.getElementById('newApiInput');
         const addApiBtn = document.getElementById('addApiBtn');
+        const otherApiBtn = document.getElementById('ApiBtn-Other');
         const coverArt = document.getElementById('coverArt');
         const coverLayer = document.getElementById('coverLayer');
         const coverPlaceholder = document.getElementById('coverPlaceholder');
@@ -419,203 +130,104 @@
         const id3Info = document.getElementById('id3Info');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const apiError = document.getElementById('apiError');
-        
+
         // 初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('页面加载完成，开始初始化...');
-            initDatabase();
-            setupEventListeners();
-            
-            // 默认加载第一个API的文件列表
-            setTimeout(() => {
-                refreshFileList();
-            }, 500);
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 初始化存储管理器
+                await storageManager.init();
+                
+                // 从 list.json 加载默认 API
+                await loadDefaultApiFromJson();
+                
+                // 设置事件监听器
+                setupEventListeners();
+                
+                // 加载 API 列表
+                await loadApiList();
+                
+                // 加载播放历史（可选）
+                const history = await storageManager.getPlayHistory(10);
+                console.log('播放历史:', history);
+                
+                // 加载设置
+                const lastApi = await storageManager.getSetting('lastApi', './api.php');
+                if (lastApi) {
+                    apiSelector.value = lastApi;
+                    currentApi = lastApi;
+                    await refreshFileList();
+                }
+                
+            } catch (error) {
+                console.error('初始化失败:', error);
+                showError('初始化失败: ' + error.message);
+            }
         });
-        
-        // 初始化IndexedDB
-        function initDatabase() {
+
+        // 从 list.json 加载默认 API
+        async function loadDefaultApiFromJson() {
             try {
-                // 先尝试打开数据库而不指定版本，以获取当前版本
-                const versionRequest = indexedDB.open('MediaPlayerDB');
+                const response = await fetch('list.json');
+                const data = await response.json();
                 
-                versionRequest.onsuccess = (event) => {
-                    const tempDb = event.target.result;
-                    const currentVersion = tempDb.version;
-                    tempDb.close();
+                if (data.api && Array.isArray(data.api)) {
+                    const existingApis = await storageManager.getAllApis();
                     
-                    // 使用当前版本+1来打开数据库，避免版本冲突
-                    const dbVersion = currentVersion + 1;
-                    console.log('当前数据库版本:', currentVersion, '，使用版本:', dbVersion);
-                    
-                    // 使用新版本打开数据库
-                    const request = indexedDB.open('MediaPlayerDB', dbVersion);
-                    
-                    request.onerror = (event) => {
-                        console.error('数据库打开失败:', event.target.error);
-                        // 如果版本升级失败，尝试使用当前版本
-                        fallbackOpenDatabase(currentVersion);
-                    };
-                    
-                    request.onupgradeneeded = (event) => {
-                        console.log('数据库升级需要，版本:', event.oldVersion, '->', event.newVersion);
-                        db = event.target.result;
-                        
-                        // 创建或更新对象存储
-                        if (!db.objectStoreNames.contains('apis')) {
-                            const apiStore = db.createObjectStore('apis', { keyPath: 'id', autoIncrement: true });
-                            apiStore.createIndex('url', 'url', { unique: true });
-                            console.log('创建apis对象存储');
+                    for (const apiUrl of data.api) {
+                        // 检查是否已存在
+                        const exists = existingApis.some(api => api.url === apiUrl);
+                        if (!exists) {
+                            await storageManager.addApi(apiUrl, `默认API (${apiUrl})`);
                         }
-                        
-                        if (!db.objectStoreNames.contains('history')) {
-                            const historyStore = db.createObjectStore('history', { keyPath: 'id', autoIncrement: true });
-                            historyStore.createIndex('timestamp', 'timestamp', { unique: false });
-                            console.log('创建history对象存储');
-                        }
-                    };
-                    
-                    request.onsuccess = (event) => {
-                        db = event.target.result;
-                        isDbReady = true;
-                        console.log('数据库初始化成功，版本:', db.version);
-                        
-                        db.onversionchange = () => {
-                            db.close();
-                            console.log('数据库已更新，请重新加载页面');
-                            showError('数据库已更新，请重新加载页面');
-                        };
-                        
-                        loadApiList();
-                    };
-                };
-                
-                versionRequest.onerror = (event) => {
-                    console.error('获取数据库版本失败:', event.target.error);
-                    // 如果无法获取版本，使用默认版本1
-                    fallbackOpenDatabase(1);
-                };
-            } catch (error) {
-                console.error('数据库初始化异常:', error);
-                isDbReady = false;
-                showError('数据库初始化异常: ' + error.message);
-            }
-        }
-        
-        // 备用数据库打开方法
-        function fallbackOpenDatabase(version) {
-            try {
-                const request = indexedDB.open('MediaPlayerDB', version);
-                
-                request.onerror = (event) => {
-                    console.error('备用数据库打开失败:', event.target.error);
-                    isDbReady = false;
-                    showError('数据库初始化失败: ' + (event.target.error?.message || '未知错误'));
-                };
-                
-                request.onsuccess = (event) => {
-                    db = event.target.result;
-                    isDbReady = true;
-                    console.log('备用数据库打开成功，版本:', db.version);
-                    loadApiList();
-                };
-            } catch (error) {
-                console.error('备用数据库打开异常:', error);
-                isDbReady = false;
-            }
-        }
-        
-        // 显示错误信息
-        function showError(message) {
-            apiError.textContent = message;
-            apiError.style.display = 'block';
-            setTimeout(() => {
-                apiError.style.display = 'none';
-            }, 5000);
-        }
-        
-        // 加载API列表
-        function loadApiList() {
-            if (!isDbReady || !db) {
-                console.log('数据库未就绪，使用默认API');
-                return;
-            }
-            
-            if (!db.objectStoreNames.contains('apis')) {
-                console.error('apis对象存储不存在');
-                return;
-            }
-            
-            try {
-                const transaction = db.transaction(['apis'], 'readonly');
-                const store = transaction.objectStore('apis');
-                const request = store.getAll();
-                
-                request.onsuccess = (event) => {
-                    const apis = event.target.result;
-                    apiSelector.innerHTML = '<option value="./api.php">默认 API (api.php)</option>';
-                    
-                    apis.forEach(api => {
-                        const option = document.createElement('option');
-                        option.value = api.url;
-                        option.textContent = api.name || api.url;
-                        option.selected = api.url === currentApi;
-                        apiSelector.appendChild(option);
-                    });
-                };
-                
-                request.onerror = (event) => {
-                    console.error('加载API列表失败:', event.target.error);
-                };
-            } catch (error) {
-                console.error('访问数据库失败:', error);
-            }
-        }
-        
-        // 添加API
-        function addApi() {
-            const url = newApiInput.value.trim();
-            if (!url) {
-                showError('请输入API URL');
-                return;
-            }
-            
-            if (!isDbReady || !db) {
-                showError('数据库未就绪，无法添加API');
-                return;
-            }
-            
-            if (!db.objectStoreNames.contains('apis')) {
-                showError('数据库结构错误，请刷新页面');
-                return;
-            }
-            
-            try {
-                const transaction = db.transaction(['apis'], 'readwrite');
-                const store = transaction.objectStore('apis');
-                const request = store.add({ url, name: url, added: new Date() });
-                
-                request.onsuccess = (event) => {
-                    newApiInput.value = '';
-                    loadApiList();
-                    console.log('API添加成功');
-                };
-                
-                request.onerror = (event) => {
-                    console.error('添加API失败:', event.target.error);
-                    if (event.target.error.name === 'ConstraintError') {
-                        showError('该API已存在');
-                    } else {
-                        showError('添加API失败: ' + event.target.error.message);
                     }
-                };
+                }
             } catch (error) {
-                console.error('访问数据库失败:', error);
-                showError('访问数据库失败: ' + error.message);
+                console.log('list.json加载失败，使用内置默认API');
+                // 添加内置默认API
+                const existingApis = await storageManager.getAllApis();
+                const defaultApiExists = existingApis.some(api => api.url === './api.php');
+                if (!defaultApiExists) {
+                    await storageManager.addApi('./api.php', '默认 API (api.php)');
+                }
             }
         }
-        
+
+        // 加载 API 列表
+        async function loadApiList() {
+            try {
+                const apis = await storageManager.getAllApis();
+                
+                // 清空选择器
+                apiSelector.innerHTML = '';
+                
+                if (apis.length === 0) {
+                    // 如果没有API，添加默认
+                    await storageManager.addApi('./api.php', '默认 API (api.php)');
+                    const newApis = await storageManager.getAllApis();
+                    populateApiSelector(newApis);
+                } else {
+                    populateApiSelector(apis);
+                }
+            } catch (error) {
+                console.error('加载API列表失败:', error);
+                showError('加载API列表失败: ' + error.message);
+            }
+        }
+
+        function populateApiSelector(apis) {
+            apiSelector.innerHTML = '';
+            
+            apis.forEach(api => {
+                const option = document.createElement('option');
+                option.value = api.url;
+                option.textContent = api.name || api.url;
+                option.selected = api.url === currentApi;
+                apiSelector.appendChild(option);
+            });
+        }
+
         // 刷新文件列表
-        function refreshFileList() {
+        async function refreshFileList() {
             const apiUrl = apiSelector.value;
             if (!apiUrl) return;
             
@@ -623,106 +235,190 @@
             loadingIndicator.style.display = 'block';
             fileItemsContainer.innerHTML = '';
             
-            console.log('正在加载文件列表，API:', apiUrl);
-            
-            fetch(`${apiUrl}?event=lmf`)
-                .then(response => {
-                    console.log('文件列表响应状态:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    loadingIndicator.style.display = 'none';
-                    console.log('文件列表数据:', data);
-                    
-                    if (data.error) {
-                        fileItemsContainer.innerHTML = `<div class="error-message">错误: ${data.error}</div>`;
-                        return;
-                    }
-                    
-                    if (!data.files || data.files.length === 0) {
-                        fileItemsContainer.innerHTML = '<div class="empty-state">没有找到媒体文件</div>';
-                        return;
-                    }
-                    
-                    data.files.forEach(file => {
-                        const fileItem = document.createElement('div');
-                        fileItem.className = 'file-item';
-                        fileItem.dataset.path = file.path;
-                        
-                        const icon = document.createElement('div');
-                        icon.className = 'file-icon';
-                        icon.innerHTML = file.type === 'audio' ? '🎵' : '🎬';
-                        
-                        const name = document.createElement('div');
-                        name.className = 'file-name';
-                        name.textContent = file.name;
-                        
-                        fileItem.appendChild(icon);
-                        fileItem.appendChild(name);
-                        
-                        fileItem.addEventListener('click', () => {
-                            document.querySelectorAll('.file-item').forEach(item => {
-                                item.classList.remove('active');
-                            });
-                            
-                            fileItem.classList.add('active');
-                            
-                            playMediaFile(file.path, file.name);
-                            
-                            fetchMediaInfo(file.path);
-                        });
-                        
-                        fileItemsContainer.appendChild(fileItem);
+            try {
+                // 保存当前选择的API到设置
+                await storageManager.setSetting('lastApi', apiUrl);
+                
+                const data = await fetchFileList(apiUrl);
+                
+                loadingIndicator.style.display = 'none';
+                
+                if (data.error) {
+                    fileItemsContainer.innerHTML = `<div class="error-message">错误: ${data.error}</div>`;
+                    return;
+                }
+                
+                if (!data.files || data.files.length === 0) {
+                    fileItemsContainer.innerHTML = '<div class="empty-state">没有找到媒体文件</div>';
+                    return;
+                }
+                
+                displayFileItems(data.files);
+            } catch (error) {
+                loadingIndicator.style.display = 'none';
+                fileItemsContainer.innerHTML = `<div class="error-message">加载失败: ${error.message}</div>`;
+                console.error('加载文件列表失败:', error);
+            }
+        }
+
+        // 显示文件列表项目
+        function displayFileItems(files) {
+            files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.dataset.path = file.path;
+                
+                const icon = document.createElement('div');
+                icon.className = 'file-icon';
+                icon.innerHTML = file.type === 'audio' ? '🎵' : '🎬';
+                
+                const name = document.createElement('div');
+                name.className = 'file-name';
+                name.textContent = file.name;
+                
+                fileItem.appendChild(icon);
+                fileItem.appendChild(name);
+                
+                fileItem.addEventListener('click', () => {
+                    document.querySelectorAll('.file-item').forEach(item => {
+                        item.classList.remove('active');
                     });
-                })
-                .catch(error => {
-                    loadingIndicator.style.display = 'none';
-                    fileItemsContainer.innerHTML = `<div class="error-message">加载失败: ${error.message}</div>`;
-                    console.error('加载文件列表失败:', error);
+                    
+                    fileItem.classList.add('active');
+                    
+                    playMediaFile(file.path, file.name);
+                    
+                    fetchAndDisplayMediaInfo(file.path);
                 });
+                
+                fileItemsContainer.appendChild(fileItem);
+            });
         }
-        
-        // 获取媒体文件信息
-        function fetchMediaInfo(filePath) {
-            console.log('获取媒体信息:', filePath);
+
+        // 播放媒体文件
+        async function playMediaFile(filePath, fileName) {
+            try {
+                const url = getMediaFileUrl(currentApi, filePath);
+                console.log('播放媒体文件:', url);
+                
+                mediaElement.src = url;
+                
+                await mediaElement.play();
+                playPauseBtn.innerHTML = '<span class="btn-icon">⏸</span>';
+                
+                // 添加到播放历史
+                await storageManager.addPlayHistory(filePath, fileName);
+                
+                // 如果是音频，显示封面；如果是视频，隐藏封面
+                if (currentMediaInfo && currentMediaInfo.type === 'audio') {
+                    coverLayer.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('播放失败:', error);
+                showError('播放失败: ' + error.message);
+            }
+        }
+
+        // 获取媒体信息
+        async function fetchAndDisplayMediaInfo(filePath) {
+            try {
+                const data = await fetchMediaInfo(currentApi, filePath);
+                
+                if (data.error) {
+                    console.error('获取媒体信息失败:', data.error);
+                    return;
+                }
+                
+                currentMediaInfo = data;
+                updateMediaInfoDisplay(data);
+                
+                // 获取封面
+                await fetchAndDisplayCover(data.path);
+                
+                // 获取ID3信息（如果是音频文件）
+                /*
+                if (data.type === 'audio') {
+                    await fetchID3Info(data.path);
+                } else {
+                    id3Info.innerHTML = '';
+                }
+                */
+            } catch (error) {
+                console.error('获取媒体信息失败:', error);
+            }
+        }
+
+        // 获取封面
+        async function fetchAndDisplayCover(filePath) {
+            console.log('获取封面:', filePath);
             
-            fetch(`${currentApi}?event=mfi&file=${encodeURIComponent(filePath)}`)
-                .then(response => {
-                    console.log('媒体信息响应状态:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('媒体信息数据:', data);
+            // 重置封面显示
+            coverArt.style.display = 'none';
+            coverPlaceholder.style.display = 'block';
+            coverArt.src = '';
+            
+            // 如果有之前的Blob URL，释放它
+            if (coverArt.src && coverArt.src.startsWith('blob:')) {
+                URL.revokeObjectURL(coverArt.src);
+            }
+            
+            try {
+                const blob = await fetchCover(currentApi, filePath);
+                
+                if (blob && blob.size > 0) {
+                    const url = URL.createObjectURL(blob);
+                    coverArt.src = url;
+                    coverArt.style.display = 'block';
+                    coverPlaceholder.style.display = 'none';
                     
-                    if (data.error) {
-                        console.error('获取媒体信息失败:', data.error);
-                        return;
-                    }
+                    // 封面加载成功和失败的处理
+                    coverArt.onload = () => {
+                        console.log('封面图片加载成功');
+                        // 如果是音频文件，显示封面层
+                        if (currentMediaInfo && currentMediaInfo.type === 'audio') {
+                            coverLayer.classList.remove('hidden');
+                        }
+                    };
                     
-                    currentMediaInfo = data;
-                    updateMediaInfoDisplay(data);
-                    
-                    // 获取封面
-                    fetchCover(data.path);
-                    
-                    // 获取ID3信息（如果是音频文件）
-                    if (data.type === 'audio') {
-                        fetchID3Info(data.path);
-                    } else {
-                        id3Info.innerHTML = '';
-                    }
-                })
-                .catch(error => {
-                    console.error('获取媒体信息失败:', error);
-                });
+                    coverArt.onerror = () => {
+                        console.error('封面图片加载失败');
+                        coverArt.style.display = 'none';
+                        coverPlaceholder.style.display = 'block';
+                    };
+                } else {
+                    throw new Error('封面数据为空');
+                }
+            } catch (error) {
+                console.log('获取封面失败:', error.message);
+                coverArt.style.display = 'none';
+                coverPlaceholder.style.display = 'block';
+            }
         }
-        
+
+        // 获取ID3信息
+        async function fetchID3Info(filePath) {
+            try {
+                const data = await fetchID3Info(currentApi, filePath);
+                
+                if (data && !data.error) {
+                    // 显示ID3信息
+                    let id3Html = '';
+                    if (data.title) id3Html += `<div><strong>标题:</strong> ${data.title}</div>`;
+                    if (data.artist) id3Html += `<div><strong>艺术家:</strong> ${data.artist}</div>`;
+                    if (data.album) id3Html += `<div><strong>专辑:</strong> ${data.album}</div>`;
+                    if (data.year) id3Html += `<div><strong>年份:</strong> ${data.year}</div>`;
+                    if (data.genre) id3Html += `<div><strong>流派:</strong> ${data.genre}</div>`;
+                    
+                    id3Info.innerHTML = id3Html;
+                } else {
+                    id3Info.innerHTML = '';
+                }
+            } catch (error) {
+                console.log('获取ID3信息失败:', error.message);
+                id3Info.innerHTML = '';
+            }
+        }
+
         // 更新媒体信息显示
         function updateMediaInfoDisplay(info) {
             mediaTitle.textContent = info.name;
@@ -736,181 +432,87 @@
             
             mediaMeta.textContent = `${info.type.toUpperCase()} | ${sizeMB} MB | ${durationText}`;
         }
-        
-        // 获取ID3信息
-        function fetchID3Info(filePath) {
-            console.log('获取ID3信息:', filePath);
+
+        // 时间格式化
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
             
-            fetch(`${currentApi}?event=id3&file=${encodeURIComponent(filePath)}`)
-                .then(response => {
-                    console.log('ID3信息响应状态:', response.status);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('ID3信息数据:', data);
-                    
-                    if (data.error) {
-                        console.log('没有ID3信息:', data.error);
-                        id3Info.innerHTML = '';
-                        return;
-                    }
-                    
-                    // 显示ID3信息
-                    let id3Html = '';
-                    if (data.title) id3Html += `<div><strong>标题:</strong> ${data.title}</div>`;
-                    if (data.artist) id3Html += `<div><strong>艺术家:</strong> ${data.artist}</div>`;
-                    if (data.album) id3Html += `<div><strong>专辑:</strong> ${data.album}</div>`;
-                    if (data.year) id3Html += `<div><strong>年份:</strong> ${data.year}</div>`;
-                    if (data.genre) id3Html += `<div><strong>流派:</strong> ${data.genre}</div>`;
-                    
-                    id3Info.innerHTML = id3Html;
-                })
-                .catch(error => {
-                    console.log('获取ID3信息失败:', error.message);
-                    id3Info.innerHTML = '';
-                });
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
-        
-        // 获取封面
-        function fetchCover(filePath) {
-            console.log('获取封面:', filePath);
-            
-            // 重置封面显示
-            coverArt.style.display = 'none';
-            coverPlaceholder.style.display = 'block';
-            
-            // 如果有之前的Blob URL，释放它
-            if (coverArt.src && coverArt.src.startsWith('blob:')) {
-                URL.revokeObjectURL(coverArt.src);
-            }
-            
-            // 重置封面源
-            coverArt.src = '';
-            
-            // 构建封面URL
-            const coverUrl = `${currentApi}?event=mfp&file=${encodeURIComponent(filePath)}`;
-            console.log('封面URL:', coverUrl);
-            
-            fetch(coverUrl)
-                .then(response => {
-                    console.log('封面响应状态:', response.status, response.statusText);
-                    console.log('封面响应头:', {
-                        'content-type': response.headers.get('content-type'),
-                        'content-length': response.headers.get('content-length')
-                    });
-                    
-                    if (response.ok) {
-                        const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.startsWith('image/')) {
-                            return response.blob();
-                        } else {
-                            throw new Error(`响应不是图片类型: ${contentType}`);
-                        }
-                    } else {
-                        throw new Error(`HTTP错误! 状态: ${response.status}`);
-                    }
-                })
-                .then(blob => {
-                    console.log('封面Blob:', blob);
-                    if (blob && blob.size > 0) {
-                        const url = URL.createObjectURL(blob);
-                        console.log('创建Blob URL:', url);
-                        
-                        // 设置封面图片
-                        coverArt.onload = () => {
-                            console.log('封面图片加载成功');
-                            coverArt.style.display = 'block';
-                            coverPlaceholder.style.display = 'none';
-                            
-                            // 如果是音频文件，确保封面层可见
-                            if (currentMediaInfo && currentMediaInfo.type === 'audio') {
-                                coverLayer.classList.remove('hidden');
-                            }
-                        };
-                        
-                        coverArt.onerror = (e) => {
-                            console.error('封面图片加载失败:', e);
-                            coverArt.style.display = 'none';
-                            coverPlaceholder.style.display = 'block';
-                        };
-                        
-                        coverArt.src = url;
-                    } else {
-                        throw new Error('封面数据为空或大小为0');
-                    }
-                })
-                .catch(error => {
-                    console.error('获取封面失败:', error.message);
-                    coverArt.style.display = 'none';
-                    coverPlaceholder.style.display = 'block';
-                });
+
+        // 显示错误信息
+        function showError(message) {
+            apiError.textContent = message;
+            apiError.style.display = 'block';
+            setTimeout(() => {
+                apiError.style.display = 'none';
+            }, 5000);
         }
-        
-        // 播放媒体文件
-        function playMediaFile(filePath, fileName) {
-            const url = `${currentApi}?event=mf&file=${encodeURIComponent(filePath)}`;
-            console.log('播放媒体文件:', url);
+
+        // 模态框功能
+        function showModal() {
+            const modal = document.getElementById('apiModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            modal.style.display = 'block';
+            backdrop.style.display = 'block';
             
-            // 重置媒体元素
-            mediaElement.src = url;
-            
-            // 重置ID3信息显示
-            id3Info.innerHTML = '';
-            
-            mediaElement.play()
-                .then(() => {
-                    console.log('媒体播放开始');
-                    playPauseBtn.innerHTML = '<span class="btn-icon">⏸</span>';
-                    addToPlaybackHistory(filePath, fileName);
-                    
-                    // 如果是音频，显示封面；如果是视频，隐藏封面
-                    if (currentMediaInfo && currentMediaInfo.type === 'audio') {
-                        coverLayer.classList.remove('hidden');
-                    }
-                })
-                .catch(error => {
-                    console.error('播放失败:', error);
-                    showError('播放失败: ' + error.message);
-                });
+            // 清空输入框
+            document.getElementById('newApiInput').value = '';
         }
-        
-        // 添加到播放历史（记录但不显示）
-        function addToPlaybackHistory(filePath, fileName) {
-            if (!isDbReady || !db) return;
-            
-            if (!db.objectStoreNames.contains('history')) {
-                console.error('history对象存储不存在');
+
+        function hideModal() {
+            const modal = document.getElementById('apiModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            modal.style.display = 'none';
+            backdrop.style.display = 'none';
+        }
+
+        // 添加API
+        async function addApi() {
+            const url = newApiInput.value.trim();
+            if (!url) {
+                showError('请输入API URL');
                 return;
             }
             
-            const timestamp = new Date();
-            const historyItem = {
-                filePath,
-                fileName,
-                timestamp: timestamp.getTime(),
-                displayTime: timestamp.toLocaleString()
-            };
-            
             try {
-                const transaction = db.transaction(['history'], 'readwrite');
-                const store = transaction.objectStore('history');
-                const request = store.add(historyItem);
-                
-                request.onsuccess = () => {
-                    console.log('播放历史已记录');
-                };
-                
-                request.onerror = (event) => {
-                    console.error('保存播放历史失败:', event.target.error);
-                };
+                await storageManager.addApi(url, url);
+                newApiInput.value = '';
+                await loadApiList();
+                hideModal();
+                console.log('API添加成功');
             } catch (error) {
-                console.error('访问数据库失败:', error);
+                console.error('添加API失败:', error);
+                if (error.name === 'ConstraintError') {
+                    showError('该API已存在');
+                } else {
+                    showError('添加API失败: ' + error.message);
+                }
             }
         }
-        
+
+        // 删除当前选中的API
+        async function deleteCurrentApi() {
+            const selectedApi = apiSelector.value;
+            if (selectedApi === './api.php') {
+                showError('不能删除默认API');
+                return;
+            }
+            
+            try {
+                await storageManager.deleteApiByUrl(selectedApi);
+                await loadApiList();
+                currentApi = './api.php';
+                await refreshFileList();
+                console.log('API删除成功');
+            } catch (error) {
+                console.error('删除API失败:', error);
+                showError('删除API失败: ' + error.message);
+            }
+        }
+
         // 修复进度条点击跳转功能
         function setupProgressBarClick() {
             progressContainer.addEventListener('click', (e) => {
@@ -937,7 +539,7 @@
                 progressBar.style.width = `${percent * 100}%`;
             });
         }
-        
+
         // 设置事件监听器
         function setupEventListeners() {
             // 播放/暂停控制
@@ -1005,14 +607,31 @@
                 refreshFileList();
             });
             
-            // 添加API按钮
-            addApiBtn.addEventListener('click', addApi);
+            // 删除API按钮
+            deleteApiBtn.addEventListener('click', deleteCurrentApi);
             
-            // 按Enter添加API
-            newApiInput.addEventListener('keypress', (e) => {
+            // 其他按钮（暂时没有功能）
+            otherApiBtn.addEventListener('click', () => {
+                console.log('其他按钮被点击');
+                // 可以在这里添加其他功能
+            });
+            
+            // 模态框事件
+            document.getElementById('addApiBtn').addEventListener('click', showModal);
+            document.getElementById('modalCloseBtn').addEventListener('click', hideModal);
+            document.getElementById('modalBackdrop').addEventListener('click', hideModal);
+            document.getElementById('modalAddBtn').addEventListener('click', addApi);
+            
+            // 模态框内按Enter添加API
+            document.getElementById('newApiInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     addApi();
                 }
+            });
+            
+            // 阻止模态框内容点击时关闭模态框
+            document.getElementById('apiModal').addEventListener('click', (e) => {
+                e.stopPropagation();
             });
             
             // 初始化持续时间显示
@@ -1037,15 +656,6 @@
                 console.error('媒体加载错误');
                 showError('媒体加载失败，请检查文件格式或网络连接');
             });
-        }
-        
-        // 时间格式化
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return '0:00';
-            
-            const minutes = Math.floor(seconds / 60);
-            seconds = Math.floor(seconds % 60);
-            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
     </script>
 </body>
